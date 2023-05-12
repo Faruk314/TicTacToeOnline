@@ -17,7 +17,21 @@ const Board = () => {
     return <div className="flex">{cells}</div>;
   };
 
-  return <div>{createRow(1)}</div>;
+  const createBoard = () => {
+    const board = [];
+
+    for (let row = 0; row < 3; row++) {
+      board.push(createRow(row));
+    }
+
+    return <div>{board}</div>;
+  };
+
+  return (
+    <div className="flex items-center justify-center h-[100vh]">
+      {createBoard()}
+    </div>
+  );
 };
 
 export default Board;
