@@ -6,6 +6,66 @@ const Board = () => {
 
   console.log(board);
 
+  const checkGameStatus = () => {
+    const caseOne =
+      board[0][0] === playerTurn &&
+      board[0][1] === playerTurn &&
+      board[0][2] === playerTurn;
+    const caseTwo =
+      board[1][0] === playerTurn &&
+      board[1][1] === playerTurn &&
+      board[1][2] === playerTurn;
+    const caseThree =
+      board[2][0] === playerTurn &&
+      board[2][1] === playerTurn &&
+      board[2][2] === playerTurn;
+    const caseFour =
+      board[0][0] === playerTurn &&
+      board[1][0] === playerTurn &&
+      board[2][0] === playerTurn;
+    const caseFive =
+      board[0][1] === playerTurn &&
+      board[1][1] === playerTurn &&
+      board[2][1] === playerTurn;
+    const caseSix =
+      board[0][2] === playerTurn &&
+      board[1][2] === playerTurn &&
+      board[2][2] === playerTurn;
+    const caseSeven =
+      board[0][2] === playerTurn &&
+      board[1][1] === playerTurn &&
+      board[2][0] === playerTurn;
+    const caseEight =
+      board[0][0] === playerTurn &&
+      board[1][1] === playerTurn &&
+      board[2][2] === playerTurn;
+
+    if (
+      caseOne ||
+      caseTwo ||
+      caseThree ||
+      caseFour ||
+      caseFive ||
+      caseSix ||
+      caseSeven ||
+      caseEight
+    ) {
+      if (playerTurn === "X") {
+        return console.log("x-win");
+      } else {
+        return console.log("O-wins");
+      }
+    }
+
+    let isDraw = board.flat().every((sign) => sign === "X" || sign === "O");
+
+    if (isDraw) {
+      return console.log("draw");
+    }
+
+    setPlayerTurn(playerTurn === "X" ? "O" : "X");
+  };
+
   const handleClick = (row: number, col: number) => {
     if (board[row][col] !== "") return;
 
@@ -15,7 +75,7 @@ const Board = () => {
 
     setBoard(newBoard);
 
-    setPlayerTurn(playerTurn === "X" ? "O" : "X");
+    checkGameStatus();
   };
 
   useEffect(() => {
