@@ -1,16 +1,19 @@
 import React from "react";
-import Board from "./components/Board";
 import Navbar from "./components/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
+import MainMenu from "./pages/MainMenu";
+import Register from "./pages/Register";
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route element={<Login />} />
-        <Route element={<Board />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/menu" element={<MainMenu />} />
+        <Route path="/room/:id" />
       </Routes>
     </BrowserRouter>
   );
