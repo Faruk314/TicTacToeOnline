@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.board div div:first-child {
+  border-right: 0.4rem solid black;
+  border-bottom: 0.4rem solid black;
+}
+
+.board div div:nth-child(2) {
+  border-right: 0.4rem solid black;
+  border-bottom: 0.4rem solid black;
+}
+
+.board div div:last-child {
+  border-bottom: 0.4rem solid black;
+}
+
+.board div:nth-child(3) div:first-child {
+  border-bottom: none;
+}
+.board div:nth-child(3) div:nth-child(2) {
+  border-bottom: none;
+}
+.board div:nth-child(3) div:nth-child(3) {
+  border-bottom: none;
+}

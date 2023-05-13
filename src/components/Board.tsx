@@ -104,14 +104,14 @@ const Board = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-[100vh]">
-      <div>
+      <div className="board">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="flex">
             {row.map((col, colIndex) => (
               <div
                 onClick={() => !isGameOver && handleClick(rowIndex, colIndex)}
                 key={colIndex}
-                className="w-[6rem] h-[6rem] border border-gray-200 flex items-center justify-center"
+                className="flex items-center justify-center w-[6rem] h-[6rem] rounded-md"
               >
                 <span className="text-[5rem]">{col}</span>
               </div>
