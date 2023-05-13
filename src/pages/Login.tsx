@@ -13,10 +13,10 @@ const Login = () => {
 
       <form className="flex flex-col justify-center shadow-2xl px-2 pt-5 pb-2">
         <label className="font-bold">EMAIL</label>
-        <input type="email" className="border border-gray-400 py-1" />
+        <input type="email" className="border border-gray-400 p-1" />
 
         <label className="mt-5 font-bold">PASSWORD</label>
-        <input type="email" className="border py-1 border-gray-400" />
+        <input type="password" className="border p-1 border-gray-400" />
 
         <button className="bg-black text-white px-5 py-1 mt-4 hover:bg-white border hover:border-black hover:text-black">
           LOGIN
