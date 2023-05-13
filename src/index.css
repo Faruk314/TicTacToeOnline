@@ -25,3 +25,15 @@
 .board div:nth-child(3) div:nth-child(3) {
   border-bottom: none;
 }
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: black;
+}
