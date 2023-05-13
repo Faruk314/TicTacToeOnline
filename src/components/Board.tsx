@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 const Board = () => {
   const [board, setBoard] = useState<string[][]>([]);
   const [playerTurn, setPlayerTurn] = useState("X");
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [message, setMessage] = useState("");
 
   console.log(board);
 
@@ -51,16 +53,20 @@ const Board = () => {
       caseEight
     ) {
       if (playerTurn === "X") {
-        return console.log("x-win");
+        setMessage("X-WINS");
       } else {
-        return console.log("O-wins");
+        setMessage("O-WINS");
       }
+
+      return setIsGameOver(true);
     }
 
     let isDraw = board.flat().every((sign) => sign === "X" || sign === "O");
 
     if (isDraw) {
-      return console.log("draw");
+      setMessage("DRAW");
+
+      return setIsGameOver(true);
     }
 
     setPlayerTurn(playerTurn === "X" ? "O" : "X");
@@ -97,15 +103,15 @@ const Board = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-[100vh]">
+    <div className="flex flex-col items-center justify-center h-[100vh]">
       <div>
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="flex">
             {row.map((col, colIndex) => (
               <div
-                onClick={() => handleClick(rowIndex, colIndex)}
+                onClick={() => !isGameOver && handleClick(rowIndex, colIndex)}
                 key={colIndex}
-                className="w-[10rem] h-[10rem] border border-gray-200 flex items-center justify-center"
+                className="w-[6rem] h-[6rem] border border-gray-200 flex items-center justify-center"
               >
                 <span className="text-[5rem]">{col}</span>
               </div>
@@ -113,6 +119,7 @@ const Board = () => {
           </div>
         ))}
       </div>
+      {message && <p className="mt-10 text-2xl">{message}</p>}
     </div>
   );
 };
