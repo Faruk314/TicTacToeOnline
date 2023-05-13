@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
@@ -10,7 +11,7 @@ const Login = () => {
         <img src="/images/logo.jpg" alt="" className="w-[3rem]" />
       </div>
 
-      <form className="flex flex-col justify-center shadow-2xl px-2 py-10">
+      <form className="flex flex-col justify-center shadow-2xl px-2 pt-5 pb-2">
         <label className="font-bold">EMAIL</label>
         <input type="email" className="border border-gray-400 py-1" />
 
@@ -21,8 +22,12 @@ const Login = () => {
           LOGIN
         </button>
 
-        <button className="text-black px-5 py-1 mt-4 bg-white border border-black hover:bg-black hover:text-white">
+        <button className="text-black px-5 py-1 mt-10 bg-white border border-black hover:bg-black hover:text-white">
           ENTER AS GUEST
+        </button>
+
+        <button className="text-black px-5 py-1 bg-white border border-black hover:bg-black hover:text-white">
+          <Link to="/register">CREATE ACCOUNT</Link>
         </button>
       </form>
     </section>
