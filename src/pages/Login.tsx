@@ -20,6 +20,10 @@ const Login = () => {
         <button className="bg-black text-white px-5 py-1 mt-4 hover:bg-white border hover:border-black hover:text-black">
           LOGIN
         </button>
+
+        <button className="text-black px-5 py-1 mt-4 bg-white border border-black hover:bg-black hover:text-white">
+          ENTER AS GUEST
+        </button>
       </form>
     </section>
   );
