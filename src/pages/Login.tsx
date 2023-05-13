@@ -26,9 +26,11 @@ const Login = () => {
           ENTER AS GUEST
         </button>
 
-        <button className="text-black px-5 py-1 bg-white border border-black hover:bg-black hover:text-white">
-          <Link to="/register">CREATE ACCOUNT</Link>
-        </button>
+        <Link to="/register">
+          <button className="text-black px-5 py-1 bg-white border border-black hover:bg-black hover:text-white w-full">
+            CREATE ACCOUNT
+          </button>
+        </Link>
       </form>
     </section>
   );
