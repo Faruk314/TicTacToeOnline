@@ -6,16 +6,21 @@ const Login = () => {
     <section className="flex flex-col items-center justify-center h-[100vh]">
       <h1 className="text-4xl font-bold">WELCOME</h1>
       <p className="text-gray-400">Sign up and play!</p>
-      <div className="flex items-center space-x-2 my-5">
-        <img src="/images/logo.jpg" alt="" className="w-[3rem]" />
-      </div>
 
-      <form className="flex flex-col justify-center shadow-2xl px-2 pt-5 pb-2">
-        <label className="font-bold">EMAIL</label>
-        <input type="email" className="border border-gray-400 p-1" />
+      <img src="/images/logo.jpg" alt="" className="w-[5rem] my-5" />
 
-        <label className="mt-5 font-bold">PASSWORD</label>
-        <input type="password" className="border p-1 border-gray-400" />
+      <form className="flex flex-col justify-center shadow-2xl px-4 py-4 rounded-md">
+        <input
+          type="email"
+          className="border border-gray-400 p-1"
+          placeholder="email"
+        />
+
+        <input
+          type="password"
+          className="border p-1 border-gray-400 mt-2"
+          placeholder="password"
+        />
 
         <button className="bg-black text-white px-5 py-1 mt-4 hover:bg-white border hover:border-black hover:text-black">
           LOGIN
