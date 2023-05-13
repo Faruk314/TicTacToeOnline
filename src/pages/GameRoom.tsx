@@ -6,7 +6,7 @@ import Chat from "../components/Chat";
 
 const GameRoom = () => {
   return (
-    <section>
+    <section className="relative">
       <Navbar />
 
       <div className="flex justify-between px-4 py-10">
