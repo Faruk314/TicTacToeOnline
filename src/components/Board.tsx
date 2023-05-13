@@ -103,7 +103,8 @@ const Board = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-[100vh]">
+    <div className="flex flex-col items-center justify-center">
+      {message && <p className="mb-10 text-2xl font-bold">{message}</p>}
       <div className="board">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="flex">
@@ -119,7 +120,6 @@ const Board = () => {
           </div>
         ))}
       </div>
-      {message && <p className="mt-10 text-2xl">{message}</p>}
     </div>
   );
 };
