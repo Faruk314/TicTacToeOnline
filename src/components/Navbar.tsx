@@ -1,10 +1,12 @@
 import React from "react";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { IoMdSettings } from "react-icons/io";
 
 const Navbar = () => {
   return (
-    <div className="flex items-center justify-between shadow-xl py-2 px-2">
-      <GiHamburgerMenu size={25} />
+    <div className="flex justify-end p-4">
+      <button className="">
+        <IoMdSettings size={25} />
+      </button>
     </div>
   );
 };
