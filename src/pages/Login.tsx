@@ -7,7 +7,6 @@ const Login = () => {
       <h1 className="text-4xl font-bold">WELCOME</h1>
       <p className="text-gray-400">Sign up and play!</p>
       <div className="flex items-center space-x-2 my-5">
-        <span className="font-bold text-xl">TIC-TAC-TOE</span>
         <img src="/images/logo.jpg" alt="" className="w-[3rem]" />
       </div>
 
@@ -27,7 +26,7 @@ const Login = () => {
         </button>
 
         <Link to="/register">
-          <button className="text-black px-5 py-1 bg-white border border-black hover:bg-black hover:text-white w-full">
+          <button className="text-black px-5 py-1 mt-1 bg-white border border-black hover:bg-black hover:text-white w-full">
             CREATE ACCOUNT
           </button>
         </Link>
