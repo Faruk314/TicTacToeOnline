@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useAppDispatch } from "../redux/hooks";
+import { playClickSound } from "../redux/SoundSlice";
 
 const Board = () => {
   const [board, setBoard] = useState<string[][]>([]);
   const [playerTurn, setPlayerTurn] = useState("X");
   const [isGameOver, setIsGameOver] = useState(false);
   const [message, setMessage] = useState("");
+  const dispatch = useAppDispatch();
 
   console.log(board);
 
@@ -74,6 +77,8 @@ const Board = () => {
 
   const handleClick = (row: number, col: number) => {
     if (board[row][col] !== "") return;
+
+    dispatch(playClickSound("/sounds/boardClick.wav"));
 
     let newBoard = [...board];
 
