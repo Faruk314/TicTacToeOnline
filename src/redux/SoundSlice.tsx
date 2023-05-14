@@ -15,9 +15,13 @@ const soundSlice = createSlice({
     toggleMute: (state) => {
       state.isMuted = !state.isMuted;
     },
+    playClickSound: (state, action) => {
+      const audio = new Audio(action.payload);
+      audio.play();
+    },
   },
 });
 
-export const { toggleMute } = soundSlice.actions;
+export const { toggleMute, playClickSound } = soundSlice.actions;
 
 export default soundSlice.reducer;
