@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import MuteButton from "../components/MuteButton";
 import SoundPlayer from "../components/SoundPlayer";
 import { useAppDispatch } from "../redux/hooks";
-import { toggleMute } from "../redux/SoundSlice";
+import { playClickSound, toggleMute } from "../redux/SoundSlice";
 
 const MainMenu = () => {
   const dispatch = useAppDispatch();
@@ -28,20 +28,30 @@ const MainMenu = () => {
           <Link
             to="/room"
             className="flex items-center justify-center py-2 space-x-2 hover:bg-gray-100"
+            onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
           >
             <span className="text-xl font-bold"> PLAY VS</span>
             <RiComputerLine size={20} />
           </Link>
 
-          <span className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100">
+          <span
+            onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
+            className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
+          >
             MULTIPLAYER
           </span>
 
-          <span className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100">
+          <span
+            onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
+            className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
+          >
             SCOREBOARD
           </span>
 
-          <span className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100">
+          <span
+            onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
+            className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
+          >
             LOGOUT
           </span>
         </div>
