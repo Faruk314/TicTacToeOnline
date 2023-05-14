@@ -11,21 +11,21 @@ const MainMenu = () => {
         <div className="w-full">
           <Link
             to="/room"
-            className="flex items-center justify-center space-x-2 hover:bg-gray-100 py-2"
+            className="flex items-center justify-center py-2 space-x-2 hover:bg-gray-100"
           >
-            <span className="font-bold text-xl"> PLAY VS</span>
+            <span className="text-xl font-bold"> PLAY VS</span>
             <RiComputerLine size={20} />
           </Link>
 
-          <span className="block font-bold text-xl py-2 cursor-pointer hover:bg-gray-100">
+          <span className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100">
             MULTIPLAYER
           </span>
 
-          <span className="block font-bold text-xl py-2 cursor-pointer hover:bg-gray-100">
+          <span className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100">
             SCOREBOARD
           </span>
 
-          <span className="block font-bold text-xl py-2 cursor-pointer hover:bg-gray-100">
+          <span className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100">
             LOGOUT
           </span>
         </div>

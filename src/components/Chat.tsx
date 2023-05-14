@@ -10,7 +10,7 @@ const Chat = () => {
 
       <div className="flex space-x-1 items-center h-[3rem] p-1 bg-gray-200">
         <textarea
-          className="px-2 border border-black w-full h-full"
+          className="w-full h-full px-2 border border-black"
           placeholder="Enter your message here"
           rows={2}
         />

@@ -9,29 +9,29 @@ const Login = () => {
 
       <img src="/images/logo.jpg" alt="" className="w-[5rem] my-5" />
 
-      <form className="flex flex-col justify-center shadow-2xl px-4 py-4 rounded-md">
+      <form className="flex flex-col justify-center px-4 py-4 rounded-md shadow-2xl">
         <input
           type="email"
-          className="border border-gray-400 p-1"
+          className="p-1 border border-gray-400"
           placeholder="email"
         />
 
         <input
           type="password"
-          className="border p-1 border-gray-400 mt-2"
+          className="p-1 mt-2 border border-gray-400"
           placeholder="password"
         />
 
-        <button className="bg-black text-white px-5 py-1 mt-4 hover:bg-white border hover:border-black hover:text-black">
+        <button className="px-5 py-1 mt-4 text-white bg-black border hover:bg-white hover:border-black hover:text-black">
           LOGIN
         </button>
 
-        <button className="text-black px-5 py-1 mt-10 bg-white border border-black hover:bg-black hover:text-white">
+        <button className="px-5 py-1 mt-10 text-black bg-white border border-black hover:bg-black hover:text-white">
           ENTER AS GUEST
         </button>
 
         <Link to="/register">
-          <button className="text-black px-5 py-1 mt-1 bg-white border border-black hover:bg-black hover:text-white w-full">
+          <button className="w-full px-5 py-1 mt-1 text-black bg-white border border-black hover:bg-black hover:text-white">
             CREATE ACCOUNT
           </button>
         </Link>

@@ -14,7 +14,7 @@ const Player = () => {
         </div>
       </div>
 
-      <div className="bg-black rounded-lg text-white font-bold text-center px-5">
+      <div className="px-5 font-bold text-center text-white bg-black rounded-lg">
         <p>Faruk</p>
       </div>
 
