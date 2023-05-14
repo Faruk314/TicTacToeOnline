@@ -92,3 +92,26 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
     .status(200)
     .json("successfully logged out");
 });
+
+export const getLoginStatus = asyncHandler(
+  async (req: Request, res: Response) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+      res.status(400);
+      throw new Error("Token not found");
+    }
+
+    let verified = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
+
+    let q = "SELECT `user_id`,`user_name`,`email` FROM users WHERE `id`= ?";
+
+    let userInfo = await query(q, [verified.id]);
+
+    if (verified) {
+      res.json({ status: true, token, userInfo });
+    } else {
+      res.json({ status: false });
+    }
+  }
+);
