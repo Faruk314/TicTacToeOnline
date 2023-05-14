@@ -49,7 +49,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("All fields must be filled");
   }
 
-  let q = "SELECT `user_id`,`password` FROM users WHERE `email` = ?";
+  let q =
+    "SELECT `user_id` AS userId ,`user_name` AS userName,`email`,`password`  FROM users WHERE `email`= ?";
 
   let data: any = await query(q, [email]);
 
@@ -65,7 +66,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Incorrect email or password");
   }
 
-  const token = jwt.sign({ id: data[0].user_id }, process.env.JWT_SECRET!);
+  const token = jwt.sign({ id: data[0].userId }, process.env.JWT_SECRET!);
 
   if (!token) {
     res.status(400);
@@ -79,7 +80,14 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
       secure: true,
     })
     .status(200)
-    .json(token);
+    .json({
+      token,
+      userInfo: {
+        userId: data[0].userId,
+        userName: data[0].userName,
+        email: data[0].email,
+      },
+    });
 });
 
 export const logout = asyncHandler(async (req: Request, res: Response) => {
@@ -104,7 +112,8 @@ export const getLoginStatus = asyncHandler(
 
     let verified = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
 
-    let q = "SELECT `user_id`,`user_name`,`email` FROM users WHERE `id`= ?";
+    let q =
+      "SELECT `user_id` AS userId ,`user_name` AS userName,`email` FROM users WHERE `id`= ?";
 
     let userInfo = await query(q, [verified.id]);
 
