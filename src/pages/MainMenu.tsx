@@ -2,6 +2,7 @@ import React from "react";
 import { RiComputerLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import MuteButton from "../components/MuteButton";
+import SoundPlayer from "../components/SoundPlayer";
 import { useAppDispatch } from "../redux/hooks";
 import { toggleMute } from "../redux/SoundSlice";
 
@@ -45,6 +46,8 @@ const MainMenu = () => {
           </span>
         </div>
       </div>
+
+      <SoundPlayer />
     </section>
   );
 };
