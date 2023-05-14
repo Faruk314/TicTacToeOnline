@@ -4,6 +4,9 @@ import GameRoom from "./pages/GameRoom";
 import Login from "./pages/Login";
 import MainMenu from "./pages/MainMenu";
 import Register from "./pages/Register";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 function App() {
   return (
