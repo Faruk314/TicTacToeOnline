@@ -81,3 +81,14 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     .status(200)
     .json(token);
 });
+
+export const logout = asyncHandler(async (req: Request, res: Response) => {
+  res
+    .clearCookie("token", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    })
+    .status(200)
+    .json("successfully logged out");
+});
