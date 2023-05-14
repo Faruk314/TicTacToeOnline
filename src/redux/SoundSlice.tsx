@@ -16,8 +16,10 @@ const soundSlice = createSlice({
       state.isMuted = !state.isMuted;
     },
     playClickSound: (state, action) => {
-      const audio = new Audio(action.payload);
-      audio.play();
+      if (!state.isMuted) {
+        const audio = new Audio(action.payload);
+        audio.play();
+      }
     },
   },
 });
