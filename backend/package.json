@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.13",
     "nodemon": "^2.0.22"
   }
 }
