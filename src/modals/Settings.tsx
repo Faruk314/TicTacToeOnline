@@ -1,22 +1,31 @@
 import React from "react";
-import { ImVolumeMute, ImVolumeMute2 } from "react-icons/im";
+import MuteButton from "../components/MuteButton";
+import { useAppDispatch } from "../redux/hooks";
+import { toggleMute } from "../redux/SoundSlice";
+import { IoExitOutline } from "react-icons/io5";
 
 interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Settings = ({ setOpen }: Props) => {
+  const dispatch = useAppDispatch();
+
   return (
     <section className="fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center text-center bg-[rgb(0,0,0,0.5)]">
       <div className="relative shadow-xl py-10 w-[18rem] rounded-md z-30 bg-white">
-        <div className="flex items-center justify-center py-2 space-x-2 text-xl font-bold cursor-pointer hover:bg-gray-100">
-          <span>MUTE SOUND</span>
-          <ImVolumeMute />
+        <div
+          onClick={() => dispatch(toggleMute())}
+          className="flex justify-center py-2 space-x-3 text-xl font-bold cursor-pointer hover:bg-gray-100"
+        >
+          <span className="">MUTE SOUND</span>
+          <MuteButton />
         </div>
 
-        <span className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100">
-          LEAVE GAME
-        </span>
+        <div className="flex items-center justify-center py-2 space-x-3 text-xl font-bold cursor-pointer hover:bg-gray-100">
+          <span>LEAVE GAME</span>
+          <IoExitOutline size={25} />
+        </div>
 
         <button
           onClick={() => setOpen(false)}
