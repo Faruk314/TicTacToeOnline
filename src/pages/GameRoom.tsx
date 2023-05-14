@@ -3,6 +3,7 @@ import Player from "../cards/Player";
 import Board from "../components/Board";
 import Navbar from "../components/Navbar";
 import Chat from "../components/Chat";
+import SoundPlayer from "../components/SoundPlayer";
 
 const GameRoom = () => {
   return (
@@ -20,6 +21,8 @@ const GameRoom = () => {
       <Board />
 
       <Chat />
+
+      <SoundPlayer />
     </section>
   );
 };
