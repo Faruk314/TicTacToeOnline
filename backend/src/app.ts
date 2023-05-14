@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth";
 import dotenv from "dotenv";
 import errorHandler from "./utils/errorHandler";
+import cors from "cors";
 
 dotenv.config();
 
@@ -12,6 +13,12 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(errorHandler);
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
 
 //routes
 app.use("/api/auth", authRoute);
