@@ -112,7 +112,7 @@ const Board = () => {
               <div
                 onClick={() => !isGameOver && handleClick(rowIndex, colIndex)}
                 key={colIndex}
-                className="flex items-center justify-center w-[6rem] h-[6rem] rounded-md"
+                className="flex items-center justify-center w-[6rem] h-[6rem] rounded-md hover:cursor-pointer"
               >
                 <span className="text-[5rem]">{col}</span>
               </div>
