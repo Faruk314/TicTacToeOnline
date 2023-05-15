@@ -1,16 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RiComputerLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import MuteButton from "../components/MuteButton";
 import SoundPlayer from "../components/SoundPlayer";
+import Multiplayer from "../modals/Multiplayer";
 import { logout } from "../redux/AuthSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { playClickSound, toggleMute } from "../redux/SoundSlice";
+import {
+  playClickSound,
+  playPopUpSound,
+  toggleMute,
+} from "../redux/SoundSlice";
 
 const MainMenu = () => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
+  const [openMultiplayer, setOpenMultiplayer] = useState(false);
 
   const handleLogout = async () => {
     dispatch(playClickSound("/sounds/click.wav"));
@@ -44,7 +50,10 @@ const MainMenu = () => {
           </Link>
 
           <span
-            onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
+            onClick={() => {
+              dispatch(playPopUpSound("/sounds/click.wav"));
+              setOpenMultiplayer(true);
+            }}
             className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
           >
             MULTIPLAYER
@@ -67,6 +76,8 @@ const MainMenu = () => {
       </div>
 
       <SoundPlayer />
+
+      {openMultiplayer && <Multiplayer setOpen={setOpenMultiplayer} />}
     </section>
   );
 };
