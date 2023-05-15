@@ -9,8 +9,6 @@ const Board = () => {
   const [message, setMessage] = useState("");
   const dispatch = useAppDispatch();
 
-  console.log(board);
-
   const checkGameStatus = () => {
     const caseOne =
       board[0][0] === playerTurn &&

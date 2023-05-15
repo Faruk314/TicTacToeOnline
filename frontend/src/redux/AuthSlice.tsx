@@ -144,16 +144,11 @@ const authSlice = createSlice({
         }
 
         state.isLoggedIn = loginStatus;
-
-        console.log(loggedUserInfo);
-        console.log(loginStatus);
       }
     );
 
     builder.addCase(logout.fulfilled, (state) => {
       state.isLoggedIn = false;
-
-      console.log(state.isLoggedIn);
     });
   },
 });

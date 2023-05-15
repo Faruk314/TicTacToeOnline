@@ -132,8 +132,6 @@ export const getLoginStatus = asyncHandler(
   async (req: Request, res: Response) => {
     const token = req.cookies.token;
 
-    console.log("token", token);
-
     if (!token) {
       res.json({ status: false });
       return;
@@ -148,15 +146,11 @@ export const getLoginStatus = asyncHandler(
       return;
     }
 
-    console.log("loggedUserId", verified);
-
     if (verified.userId) {
       let q =
         "SELECT `user_id` AS userId ,`user_name` AS userName,`email` FROM users WHERE `user_id`= ?";
 
       let userInfo: any = await query(q, [verified.userId]);
-
-      console.log(userInfo);
 
       res.json({ status: true, userInfo: userInfo[0] });
     }
