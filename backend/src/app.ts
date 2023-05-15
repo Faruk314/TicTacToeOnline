@@ -5,10 +5,15 @@ import userRoute from "./routes/user";
 import dotenv from "dotenv";
 import errorHandler from "./utils/errorHandler";
 import cors from "cors";
+import setupSocket from "./socket";
+import http from "http";
 
 dotenv.config();
 
 const app: Express = express();
+
+const server = http.createServer(app);
+setupSocket();
 
 app.use(cookieParser());
 app.use(express.json());
