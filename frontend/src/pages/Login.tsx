@@ -1,6 +1,6 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../redux/AuthSlice";
+import { cleanMessage, login } from "../redux/AuthSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const Login = () => {
@@ -16,12 +16,17 @@ const Login = () => {
   const loginHandler = async (e: FormEvent) => {
     e.preventDefault();
 
-    dispatch(login({ email, password }));
+    await dispatch(login({ email, password }));
+  };
 
+  useEffect(() => {
     if (isLoggedIn) {
       navigate("/menu");
+      dispatch(cleanMessage());
+      setEmail("");
+      setPassword("");
     }
-  };
+  }, [isLoggedIn, dispatch]);
 
   return (
     <section className="flex flex-col items-center justify-center h-[100vh]">
