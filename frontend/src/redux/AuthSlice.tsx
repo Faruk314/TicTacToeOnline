@@ -3,7 +3,6 @@ import axios from "axios";
 import { User } from "../types/types";
 
 interface LoginPayload {
-  token: string;
   userInfo?: User;
   status: boolean;
 }
