@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RiComputerLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MuteButton from "../components/MuteButton";
 import SoundPlayer from "../components/SoundPlayer";
-import { useAppDispatch } from "../redux/hooks";
+import { logout } from "../redux/AuthSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound, toggleMute } from "../redux/SoundSlice";
 
 const MainMenu = () => {
   const dispatch = useAppDispatch();
+  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    dispatch(playClickSound("/sounds/click.wav"));
+    await dispatch(logout());
+  };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn]);
 
   return (
     <section className="flex flex-col items-center text-center justify-center h-[100vh]">
@@ -49,7 +63,7 @@ const MainMenu = () => {
           </span>
 
           <span
-            onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
+            onClick={handleLogout}
             className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
           >
             LOGOUT
