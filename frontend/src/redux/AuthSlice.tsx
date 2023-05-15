@@ -4,7 +4,8 @@ import { User } from "../types/types";
 
 interface LoginPayload {
   token: string;
-  userInfo: User;
+  userInfo?: User;
+  status: boolean;
 }
 
 interface InitialState {
@@ -59,6 +60,21 @@ export const register = createAsyncThunk(
   }
 );
 
+export const getLoginStatus = createAsyncThunk(
+  "auth/getLoginStatus",
+  async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/auth/getLoginStatus`
+      );
+
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -71,7 +87,12 @@ const authSlice = createSlice({
     builder.addCase(
       login.fulfilled,
       (state, action: PayloadAction<LoginPayload>) => {
-        state.loggedUserInfo = action.payload.userInfo;
+        const loggedUserInfo = action.payload.userInfo;
+
+        if (loggedUserInfo) {
+          state.loggedUserInfo = loggedUserInfo;
+        }
+
         state.isLoggedIn = true;
       }
     );
@@ -87,7 +108,12 @@ const authSlice = createSlice({
     builder.addCase(
       register.fulfilled,
       (state, action: PayloadAction<LoginPayload>) => {
-        state.loggedUserInfo = action.payload.userInfo;
+        const loggedUserInfo = action.payload.userInfo;
+
+        if (loggedUserInfo) {
+          state.loggedUserInfo = loggedUserInfo;
+        }
+
         state.isLoggedIn = true;
       }
     );
@@ -99,6 +125,22 @@ const authSlice = createSlice({
         state.errorMessage = action.payload;
       }
     });
+
+    builder.addCase(
+      getLoginStatus.fulfilled,
+      (state, action: PayloadAction<LoginPayload>) => {
+        const loggedUserInfo = action.payload.userInfo;
+        const loginStatus = action.payload.status;
+
+        if (loggedUserInfo) {
+          state.loggedUserInfo = loggedUserInfo;
+        }
+
+        state.isLoggedIn = loginStatus;
+
+        console.log(loggedUserInfo);
+      }
+    );
   },
 });
 
