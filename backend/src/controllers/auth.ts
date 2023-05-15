@@ -103,8 +103,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
   res
     .cookie("token", token, {
-      httpOnly: true,
-      sameSite: "none",
+      httpOnly: false,
+      sameSite: "strict",
       secure: true,
     })
     .status(200)
