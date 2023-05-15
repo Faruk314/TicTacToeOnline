@@ -57,7 +57,6 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
       })
       .status(200)
       .json({
-        token,
         userInfo: {
           userId: result[0].userId,
           userName: result[0].userName,
@@ -110,7 +109,6 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     })
     .status(200)
     .json({
-      token,
       userInfo: {
         userId: data[0].userId,
         userName: data[0].userName,
@@ -160,7 +158,7 @@ export const getLoginStatus = asyncHandler(
 
       console.log(userInfo);
 
-      res.json({ status: true, token, userInfo: userInfo[0] });
+      res.json({ status: true, userInfo: userInfo[0] });
     }
   }
 );
