@@ -22,7 +22,7 @@ const initialState: InitialState = {
 export const login = createAsyncThunk(
   "auth/login",
   async (
-    formData: { email: string; password: string },
+    formData: { email: String; password: String },
     { rejectWithValue }
   ) => {
     try {
@@ -39,10 +39,34 @@ export const login = createAsyncThunk(
   }
 );
 
+export const register = createAsyncThunk(
+  "auth/register",
+  async (
+    formData: { userName: String; email: String; password: String },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/api/auth/register`,
+        formData
+      );
+
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response.data.message;
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    cleanMessage(state) {
+      state.errorMessage = "";
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       login.fulfilled,
@@ -59,9 +83,25 @@ const authSlice = createSlice({
         state.errorMessage = action.payload;
       }
     });
+
+    builder.addCase(
+      register.fulfilled,
+      (state, action: PayloadAction<LoginPayload>) => {
+        state.loggedUserInfo = action.payload.userInfo;
+        state.isLoggedIn = true;
+      }
+    );
+
+    builder.addCase(register.rejected, (state, action: PayloadAction<any>) => {
+      const payload = action.payload;
+
+      if (typeof payload === "string") {
+        state.errorMessage = action.payload;
+      }
+    });
   },
 });
 
-export const {} = authSlice.actions;
+export const { cleanMessage } = authSlice.actions;
 
 export default authSlice.reducer;
