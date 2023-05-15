@@ -1,7 +1,28 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../redux/AuthSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useAppDispatch();
+  const message = useAppSelector((state) => state.auth.errorMessage);
+  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const navigate = useNavigate();
+
+  console.log(message);
+
+  const loginHandler = async (e: FormEvent) => {
+    e.preventDefault();
+
+    dispatch(login({ email, password }));
+
+    if (isLoggedIn) {
+      navigate("/menu");
+    }
+  };
+
   return (
     <section className="flex flex-col items-center justify-center h-[100vh]">
       <h1 className="text-4xl font-bold">WELCOME</h1>
@@ -9,15 +30,24 @@ const Login = () => {
 
       <img src="/images/logo.jpg" alt="" className="w-[5rem] my-5" />
 
-      <form className="flex flex-col justify-center px-4 py-4 rounded-md shadow-2xl">
+      <form
+        onSubmit={loginHandler}
+        className="flex flex-col justify-center px-4 py-4 rounded-md shadow-2xl"
+      >
         <input
+          name="email"
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="p-1 border border-gray-400"
           placeholder="email"
         />
 
         <input
+          name="password"
           type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="p-1 mt-2 border border-gray-400"
           placeholder="password"
         />
@@ -36,6 +66,8 @@ const Login = () => {
           </button>
         </Link>
       </form>
+
+      {message && <p className="mt-5 text-center text-red-500">{message}</p>}
     </section>
   );
 };
