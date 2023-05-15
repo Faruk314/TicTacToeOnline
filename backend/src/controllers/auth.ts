@@ -134,33 +134,33 @@ export const getLoginStatus = asyncHandler(
   async (req: Request, res: Response) => {
     const token = req.cookies.token;
 
-    console.log(token);
+    console.log("token", token);
 
     if (!token) {
-      res.status(400);
-      throw new Error("Token not found");
+      res.json({ status: false });
+      return;
     }
 
     let verified = jwt.verify(token, process.env.JWT_SECRET!) as {
       userId: number;
     };
 
-    console.log("loggedUserId", verified);
-
-    let userInfo;
-    let q;
-
-    if (verified.userId) {
-      q =
-        "SELECT `user_id` AS userId ,`user_name` AS userName,`email` FROM users WHERE `user_id`= ?";
-
-      userInfo = await query(q, [verified.userId]);
+    if (!verified) {
+      res.json({ status: false });
+      return;
     }
 
-    if (userInfo) {
-      res.json({ status: true, token, userInfo });
-    } else {
-      res.json({ status: false });
+    console.log("loggedUserId", verified);
+
+    if (verified.userId) {
+      let q =
+        "SELECT `user_id` AS userId ,`user_name` AS userName,`email` FROM users WHERE `user_id`= ?";
+
+      let userInfo: any = await query(q, [verified.userId]);
+
+      console.log(userInfo);
+
+      res.json({ status: true, token, userInfo: userInfo[0] });
     }
   }
 );
