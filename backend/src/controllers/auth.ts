@@ -12,11 +12,11 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("All fields must be filled");
   }
 
-  let q = "SELECT `id` AS userId FROM users WHERE `email`= ?";
+  let q = "SELECT `user_id` AS userId FROM users WHERE `email`= ?";
 
   let result: any = await query(q, [email]);
 
-  if (result) {
+  if (result.length > 0) {
     res.status(400);
     throw new Error("User with this email already exists");
   }
