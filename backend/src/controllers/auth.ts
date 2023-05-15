@@ -12,9 +12,9 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("All fields must be filled");
   }
 
-  let q = "SELECT `id` FROM users WHERE `email`= ?";
+  let q = "SELECT `id` AS userId FROM users WHERE `email`= ?";
 
-  let result = await query(q, [email]);
+  let result: any = await query(q, [email]);
 
   if (result) {
     res.status(400);
@@ -34,7 +34,33 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
     result = await query(q, [userName, email, hash]);
 
-    res.status(200).json("User successfully registered");
+    q =
+      "SELECT `user_id` AS userId ,`user_name` AS userName,`email` FROM users WHERE `email`= ? AND `password`= ?";
+
+    result = await query(q, [email, hash]);
+
+    const token = jwt.sign({ id: result[0].userId }, process.env.JWT_SECRET!);
+
+    if (!token) {
+      res.status(400);
+      throw new Error("Something went wrong with token creation");
+    }
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      })
+      .status(200)
+      .json({
+        token,
+        userInfo: {
+          userId: result[0].userId,
+          userName: result[0].userName,
+          email: result[0].email,
+        },
+      });
   } catch (error) {
     res.status(500);
     throw new Error("An error occurred during user registration");
