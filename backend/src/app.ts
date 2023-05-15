@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth";
+import userRoute from "./routes/user";
 import dotenv from "dotenv";
 import errorHandler from "./utils/errorHandler";
 import cors from "cors";
@@ -21,6 +22,7 @@ app.use(
 
 //routes
 app.use("/api/auth", authRoute);
+app.use("/api/users", userRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
