@@ -39,7 +39,10 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
     result = await query(q, [email, hash]);
 
-    const token = jwt.sign({ id: result[0].userId }, process.env.JWT_SECRET!);
+    const token = jwt.sign(
+      { userId: result[0].userId },
+      process.env.JWT_SECRET!
+    );
 
     if (!token) {
       res.status(400);
@@ -92,7 +95,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Incorrect email or password");
   }
 
-  const token = jwt.sign({ id: data[0].userId }, process.env.JWT_SECRET!);
+  const token = jwt.sign({ userId: data[0].userId }, process.env.JWT_SECRET!);
 
   if (!token) {
     res.status(400);
@@ -131,19 +134,30 @@ export const getLoginStatus = asyncHandler(
   async (req: Request, res: Response) => {
     const token = req.cookies.token;
 
+    console.log(token);
+
     if (!token) {
       res.status(400);
       throw new Error("Token not found");
     }
 
-    let verified = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
+    let verified = jwt.verify(token, process.env.JWT_SECRET!) as {
+      userId: number;
+    };
 
-    let q =
-      "SELECT `user_id` AS userId ,`user_name` AS userName,`email` FROM users WHERE `id`= ?";
+    console.log("loggedUserId", verified);
 
-    let userInfo = await query(q, [verified.id]);
+    let userInfo;
+    let q;
 
-    if (verified) {
+    if (verified.userId) {
+      q =
+        "SELECT `user_id` AS userId ,`user_name` AS userName,`email` FROM users WHERE `user_id`= ?";
+
+      userInfo = await query(q, [verified.userId]);
+    }
+
+    if (userInfo) {
       res.json({ status: true, token, userInfo });
     } else {
       res.json({ status: false });
