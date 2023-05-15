@@ -15,13 +15,8 @@ const MainMenu = () => {
   const handleLogout = async () => {
     dispatch(playClickSound("/sounds/click.wav"));
     await dispatch(logout());
+    navigate("/");
   };
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/");
-    }
-  }, [isLoggedIn]);
 
   return (
     <section className="flex flex-col items-center text-center justify-center h-[100vh]">
