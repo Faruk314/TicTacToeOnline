@@ -75,6 +75,14 @@ export const getLoginStatus = createAsyncThunk(
   }
 );
 
+export const logout = createAsyncThunk("auth/logout", async () => {
+  try {
+    await axios.get(`http://localhost:4000/api/auth/getLoginStatus`);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -141,6 +149,10 @@ const authSlice = createSlice({
         console.log(loggedUserInfo);
       }
     );
+
+    builder.addCase(logout.fulfilled, (state) => {
+      state.isLoggedIn = false;
+    });
   },
 });
 
