@@ -11,8 +11,6 @@ const Login = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
 
-  console.log(message);
-
   const loginHandler = async (e: FormEvent) => {
     e.preventDefault();
 
