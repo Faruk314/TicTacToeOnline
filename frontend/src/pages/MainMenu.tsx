@@ -11,27 +11,41 @@ import {
   playPopUpSound,
   toggleMute,
 } from "../redux/SoundSlice";
+import { FaUserFriends } from "react-icons/fa";
+import FriendRequests from "../modals/FriendRequests";
 
 const MainMenu = () => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
   const [openMultiplayer, setOpenMultiplayer] = useState(false);
+  const [openFriendRequests, setOpenFriendRequests] = useState(false);
 
   const handleLogout = async () => {
-    dispatch(playClickSound("/sounds/click.wav"));
+    dispatch(playClickSound("/sounds/popUp.mp3"));
     await dispatch(logout());
     navigate("/");
   };
 
   return (
     <section className="flex flex-col items-center text-center justify-center h-[100vh]">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpenFriendRequests((prev) => !prev);
+          dispatch(playPopUpSound("/sounds/popUp.mp3"));
+        }}
+        className="absolute top-3 left-3"
+      >
+        <FaUserFriends size={25} />
+      </button>
+
       <div
         onClick={(e) => {
           e.stopPropagation();
           dispatch(toggleMute());
         }}
-        className="absolute top-2 right-2"
+        className="absolute top-3 right-2"
       >
         <MuteButton />
       </div>
@@ -78,6 +92,7 @@ const MainMenu = () => {
       <SoundPlayer />
 
       {openMultiplayer && <Multiplayer setOpen={setOpenMultiplayer} />}
+      {openFriendRequests && <FriendRequests />}
     </section>
   );
 };
