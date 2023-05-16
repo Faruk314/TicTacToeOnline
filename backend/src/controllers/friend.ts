@@ -37,6 +37,23 @@ export const sendFriendRequest = asyncHandler(
   }
 );
 
+export const acceptFriendRequest = asyncHandler(
+  async (req: Request, res: Response) => {
+    const requestId: number = req.body.id;
+
+    let q = "UPDATE friend_requests SET `status` = ? WHERE `id`= ?";
+
+    let result: any = await query(q, ["accepted", requestId]);
+
+    if (result.affectedRows === 1) {
+      res.status(200).json("Friend request accepted");
+    } else {
+      res.status(400);
+      throw new Error("Failed to accept friend request");
+    }
+  }
+);
+
 export const checkFriendRequestStatus = asyncHandler(
   async (req: Request, res: Response) => {
     const loggedUser = req.user?.userId;
@@ -90,7 +107,7 @@ export const getFriendRequests = asyncHandler(
   async (req: Request, res: Response) => {
     const loggedUser = req.user?.userId;
 
-    let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image
+    let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image, fr.id
        FROM friend_requests fr JOIN users u ON u.user_id = fr.sender
       WHERE fr.receiver = ? AND fr.status = ?`;
 
@@ -105,7 +122,7 @@ export const getFriendRequests = asyncHandler(
 export const getFriends = asyncHandler(async (req: Request, res: Response) => {
   const loggedUser = req.user?.userId;
 
-  let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image
+  let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image, fr.id
        FROM friend_requests fr JOIN users u ON u.user_id = fr.sender
       WHERE fr.receiver = ? AND fr.status = ?`;
 

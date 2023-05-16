@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import {
+  acceptFriendRequest,
   checkFriendRequestStatus,
   deleteFriendRequest,
   getFriendRequests,
@@ -15,6 +16,8 @@ router.get("/getFriendRequests", protect, getFriendRequests);
 router.get("/getFriends", protect, getFriends);
 
 router.post("/sendFriendRequest", protect, sendFriendRequest);
+
+router.put("/acceptFriendRequest", protect, acceptFriendRequest);
 
 router.post("/checkFriendRequestStatus", protect, checkFriendRequestStatus);
 
