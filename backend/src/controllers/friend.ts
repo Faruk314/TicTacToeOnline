@@ -4,7 +4,7 @@ import query from "../db";
 
 export const sendFriendRequest = asyncHandler(
   async (req: Request, res: Response) => {
-    const loggedUser: number | undefined = req.user?.userId;
+    const loggedUser = req.user?.userId;
     const personB: number = req.body.receiverId;
 
     //Check if request exists
@@ -39,7 +39,7 @@ export const sendFriendRequest = asyncHandler(
 
 export const checkFriendRequestStatus = asyncHandler(
   async (req: Request, res: Response) => {
-    const loggedUser: number | undefined = req.user?.userId;
+    const loggedUser = req.user?.userId;
     const personB: number = req.body.personB;
 
     let q = `SELECT fr.status FROM friend_requests fr WHERE (fr.sender=? OR fr.receiver=?) AND (fr.sender=? OR fr.receiver= ?) AND (fr.status=? OR fr.status=?)`;
@@ -66,5 +66,11 @@ export const checkFriendRequestStatus = asyncHandler(
       //2 indicates that logged user and person B are already friends
       res.json({ status: 2 });
     }
+  }
+);
+
+export const rejectFriendRequest = asyncHandler(
+  async (req: Request, res: Response) => {
+    const loggedUser = req.user?.userId;
   }
 );
