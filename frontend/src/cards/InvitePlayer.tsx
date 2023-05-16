@@ -1,6 +1,12 @@
 import React from "react";
+import { UserRequest } from "../types/types";
+import { User } from "../types/types";
 
-const InvitePlayer = () => {
+interface Props {
+  friendRequestInfo: UserRequest | User;
+}
+
+const InvitePlayer = ({ friendRequestInfo }: Props) => {
   return (
     <div className="flex items-center justify-between p-2 shadow-md">
       <div className="flex space-x-2">
@@ -11,8 +17,8 @@ const InvitePlayer = () => {
         />
 
         <div className="flex flex-col items-start">
-          <span className="">Faruk</span>
-          <span className="">id: 1</span>
+          <span className="">{friendRequestInfo.userName}</span>
+          <span className="">id: {friendRequestInfo.userId}</span>
         </div>
       </div>
 

@@ -106,7 +106,7 @@ const Multiplayer = ({ setOpen }: Props) => {
 
             <div className="flex flex-col mt-2 px-1 py-2 space-y-3 overflow-y-auto max-h-[12rem]">
               {friends.map((friend) => (
-                <InvitePlayer key={friend.id} />
+                <InvitePlayer key={friend.id} friendRequestInfo={friend} />
               ))}
             </div>
           </div>
@@ -136,7 +136,7 @@ const Multiplayer = ({ setOpen }: Props) => {
                 <p>No users found</p>
               )}
               {users.map((user) => (
-                <InvitePlayer key={user.userId} />
+                <InvitePlayer key={user.userId} friendRequestInfo={user} />
               ))}
             </div>
           </div>
