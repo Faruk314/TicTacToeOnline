@@ -4,3 +4,7 @@ export interface User {
   email: string;
   image: string | null;
 }
+
+export interface UserRequest extends User {
+  id: number;
+}
