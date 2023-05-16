@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 import InvitePlayer from "../cards/InvitePlayer";
 import { User } from "../types/types";
 import axios from "axios";
+import { getFriends } from "../redux/FriendSlice";
 
 interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,12 +18,16 @@ const Multiplayer = ({ setOpen }: Props) => {
   const dispatch = useAppDispatch();
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [friends, setFriends] = useState<User[]>([]);
+  const friends = useAppSelector((state) => state.friend.friends);
 
   const [isOpen, setIsOpen] = useState<ModalState>({
     friends: false,
     invite: false,
   });
+
+  useEffect(() => {
+    dispatch(getFriends());
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -95,14 +100,14 @@ const Multiplayer = ({ setOpen }: Props) => {
 
         {isOpen.friends && (
           <div className="px-2 mt-2">
-            {/* {friends.length === 0 && (
+            {friends.length === 0 && (
               <p>You don't have anyone in friend list</p>
-            )} */}
+            )}
 
             <div className="flex flex-col mt-2 px-1 py-2 space-y-3 overflow-y-auto max-h-[12rem]">
-              <InvitePlayer />
-              <InvitePlayer />
-              <InvitePlayer />
+              {friends.map((friend) => (
+                <InvitePlayer key={friend.id} />
+              ))}
             </div>
           </div>
         )}
