@@ -69,8 +69,19 @@ export const checkFriendRequestStatus = asyncHandler(
   }
 );
 
-export const rejectFriendRequest = asyncHandler(
+export const deleteFriendRequest = asyncHandler(
   async (req: Request, res: Response) => {
-    const loggedUser = req.user?.userId;
+    const requestId: number = req.body.id;
+
+    let q = "DELETE FROM friend_requests WHERE `id` = ?";
+
+    let result: any = await query(q, [requestId]);
+
+    if (result.affectedRows === 1) {
+      res.status(200).json("Friend request deleted successfully");
+    } else {
+      res.status(400);
+      throw new Error("Failed to delete friend request");
+    }
   }
 );
