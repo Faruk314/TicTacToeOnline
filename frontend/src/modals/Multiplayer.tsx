@@ -9,11 +9,20 @@ interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+type ModalState = {
+  [key: string]: boolean;
+};
+
 const Multiplayer = ({ setOpen }: Props) => {
   const dispatch = useAppDispatch();
-  const [openInvite, setOpenInvite] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [friends, setFriends] = useState<User[]>([]);
+
+  const [isOpen, setIsOpen] = useState<ModalState>({
+    friends: false,
+    invite: false,
+  });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -34,6 +43,25 @@ const Multiplayer = ({ setOpen }: Props) => {
       setUsers([]);
     }
   }, [searchQuery]);
+
+  const toggleModal = (modalName: string) => {
+    setIsOpen((prevState) => {
+      const newState = { ...prevState };
+      const modalState = prevState[modalName];
+
+      // Close all other modals
+      Object.keys(newState).forEach((key) => {
+        if (key !== modalName) {
+          newState[key] = false;
+        }
+      });
+
+      // Toggle the target modal
+      newState[modalName] = !modalState;
+
+      return newState;
+    });
+  };
 
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center text-center bg-[rgb(0,0,0,0.5)]">
@@ -57,7 +85,31 @@ const Multiplayer = ({ setOpen }: Props) => {
 
         <span
           onClick={() => {
-            setOpenInvite((prev) => !prev);
+            toggleModal("friends");
+            dispatch(playClickSound("/sounds/click.wav"));
+          }}
+          className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
+        >
+          INVITE FRIENDS
+        </span>
+
+        {isOpen.friends && (
+          <div className="px-2 mt-2">
+            {/* {friends.length === 0 && (
+              <p>You don't have anyone in friend list</p>
+            )} */}
+
+            <div className="flex flex-col mt-2 px-1 py-2 space-y-3 overflow-y-auto max-h-[12rem]">
+              <InvitePlayer />
+              <InvitePlayer />
+              <InvitePlayer />
+            </div>
+          </div>
+        )}
+
+        <span
+          onClick={() => {
+            toggleModal("invite");
             dispatch(playClickSound("/sounds/click.wav"));
           }}
           className="block py-2 mt-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
@@ -65,7 +117,7 @@ const Multiplayer = ({ setOpen }: Props) => {
           SEND INVITE
         </span>
 
-        {openInvite && (
+        {isOpen.invite && (
           <div className="px-2 mt-2">
             <input
               value={searchQuery}
