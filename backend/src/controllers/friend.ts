@@ -101,3 +101,17 @@ export const getFriendRequests = asyncHandler(
     }
   }
 );
+
+export const getFriends = asyncHandler(async (req: Request, res: Response) => {
+  const loggedUser = req.user?.userId;
+
+  let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image
+       FROM friend_requests fr JOIN users u ON u.user_id = fr.sender
+      WHERE fr.receiver = ? AND fr.status = ?`;
+
+  let results: any = await query(q, [loggedUser, "accepted"]);
+
+  if (results) {
+    res.status(200).json(results);
+  }
+});
