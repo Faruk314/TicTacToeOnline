@@ -16,10 +16,12 @@ import { UserRequest } from "../types/types";
 
 interface InitialState {
   friends: UserRequest[];
+  friendRequests: UserRequest[];
 }
 
 const initialState: InitialState = {
   friends: [],
+  friendRequests: [],
 };
 
 export const getFriends = createAsyncThunk("friend/getFriends", async () => {
@@ -34,6 +36,21 @@ export const getFriends = createAsyncThunk("friend/getFriends", async () => {
   }
 });
 
+export const getFriendRequests = createAsyncThunk(
+  "friend/getFriendRequests",
+  async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/friends/getFriendRequests`
+      );
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const friendSlice = createSlice({
   name: "friend",
   initialState,
@@ -45,6 +62,14 @@ const friendSlice = createSlice({
         state.friends = action.payload;
 
         console.log(state.friends);
+      }
+    );
+    builder.addCase(
+      getFriendRequests.fulfilled,
+      (state, action: PayloadAction<UserRequest[]>) => {
+        state.friendRequests = action.payload;
+
+        console.log("friendRequests", state.friendRequests);
       }
     );
   },
