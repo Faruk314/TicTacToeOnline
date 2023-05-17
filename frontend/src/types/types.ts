@@ -6,5 +6,6 @@ export interface User {
 }
 
 export interface UserRequest extends User {
-  id: number;
+  id?: number;
+  status?: string;
 }
