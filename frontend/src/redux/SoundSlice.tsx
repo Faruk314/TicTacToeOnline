@@ -29,7 +29,6 @@ const soundSlice = createSlice({
     },
   },
 });
-
 export const { toggleMute, playClickSound, playPopUpSound } =
   soundSlice.actions;
 

@@ -110,7 +110,7 @@ export const getFriendRequests = asyncHandler(
   async (req: Request, res: Response) => {
     const loggedUser = req.user?.userId;
 
-    let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image, fr.id
+    let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image, fr.id, fr.status
        FROM friend_requests fr JOIN users u ON u.user_id = fr.sender
       WHERE fr.receiver = ? AND fr.status = ?`;
 
@@ -125,7 +125,7 @@ export const getFriendRequests = asyncHandler(
 export const getFriends = asyncHandler(async (req: Request, res: Response) => {
   const loggedUser = req.user?.userId;
 
-  let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image, fr.id
+  let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image, fr.id, fr.status
        FROM friend_requests fr JOIN users u ON (u.user_id = fr.sender OR u.user_id = fr.receiver) AND u.user_id != ?
       WHERE (fr.receiver = ? OR fr.sender = ?) AND fr.status = ?`;
 
