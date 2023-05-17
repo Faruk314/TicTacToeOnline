@@ -7,6 +7,9 @@ export const sendFriendRequest = asyncHandler(
     const loggedUser = req.user?.userId;
     const personB: number = req.body.receiverId;
 
+    console.log("loggedUser", loggedUser);
+    console.log("personB", personB);
+
     //Check if request exists
     let q = `SELECT fr.id FROM friend_requests fr WHERE (fr.sender=? OR fr.receiver=?) AND (fr.sender=? OR fr.receiver= ?) AND (fr.status=? OR fr.status=?)`;
     let result: any = await query(q, [
@@ -18,7 +21,7 @@ export const sendFriendRequest = asyncHandler(
       "accepted",
     ]);
 
-    if (result) {
+    if (result.length > 0) {
       res.status(400);
       throw new Error("Friend request already exists");
     }
@@ -123,10 +126,15 @@ export const getFriends = asyncHandler(async (req: Request, res: Response) => {
   const loggedUser = req.user?.userId;
 
   let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image, fr.id
-       FROM friend_requests fr JOIN users u ON u.user_id = fr.sender
-      WHERE fr.receiver = ? AND fr.status = ?`;
+       FROM friend_requests fr JOIN users u ON (u.user_id = fr.sender OR u.user_id = fr.receiver) AND u.user_id != ?
+      WHERE (fr.receiver = ? OR fr.sender = ?) AND fr.status = ?`;
 
-  let results: any = await query(q, [loggedUser, "accepted"]);
+  let results: any = await query(q, [
+    loggedUser,
+    loggedUser,
+    loggedUser,
+    "accepted",
+  ]);
 
   if (results) {
     res.status(200).json(results);
