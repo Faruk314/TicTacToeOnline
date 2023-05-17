@@ -36,6 +36,19 @@ export const getFriends = createAsyncThunk("friend/getFriends", async () => {
   }
 });
 
+export const sendFriendRequest = createAsyncThunk(
+  "friend/sendFriendRequest",
+  async (receiverId: number) => {
+    try {
+      await axios.post(`http://localhost:4000/api/friends/sendFriendRequest`, {
+        receiverId,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 export const getFriendRequests = createAsyncThunk(
   "friend/getFriendRequests",
   async () => {

@@ -1,4 +1,7 @@
 import React from "react";
+import FriendRequests from "../modals/FriendRequests";
+import { sendFriendRequest } from "../redux/FriendSlice";
+import { useAppDispatch } from "../redux/hooks";
 import { UserRequest } from "../types/types";
 import { User } from "../types/types";
 
@@ -7,6 +10,12 @@ interface Props {
 }
 
 const InvitePlayer = ({ friendRequestInfo }: Props) => {
+  const dispatch = useAppDispatch();
+
+  const friendRequestHandler = () => {
+    dispatch(sendFriendRequest(friendRequestInfo.userId));
+  };
+
   return (
     <div className="flex items-center justify-between p-2 shadow-md">
       <div className="flex space-x-2">
@@ -23,7 +32,12 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
       </div>
 
       <div className="flex font-bold">
-        <button className="p-2 rounded-md hover:bg-gray-100">ADD</button>
+        <button
+          onClick={friendRequestHandler}
+          className="p-2 rounded-md hover:bg-gray-100"
+        >
+          ADD
+        </button>
         <button className="p-2 rounded-md hover:bg-gray-100">INVITE</button>
       </div>
     </div>
