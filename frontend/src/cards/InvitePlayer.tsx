@@ -24,6 +24,10 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
 
   const friendRequestHandler = async () => {
     await dispatch(sendFriendRequest(friendRequestInfo.userId));
+    socket.emit("sendFriendRequest", {
+      senderId: loggedUserInfo?.userId,
+      receiverId: friendRequestInfo.userId,
+    });
     checkFriendRequestStatus();
   };
 

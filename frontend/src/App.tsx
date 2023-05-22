@@ -8,6 +8,8 @@ import axios from "axios";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { getLoginStatus } from "./redux/AuthSlice";
 import { useSocket } from "./hooks/useSocket";
+import { UserRequest } from "./types/types";
+import { updateFriendRequests } from "./redux/FriendSlice";
 
 axios.defaults.withCredentials = true;
 
@@ -15,6 +17,16 @@ function App() {
   const dispatch = useAppDispatch();
 
   const socket = useSocket();
+
+  useEffect(() => {
+    socket?.on("getFriendRequest", (request: UserRequest) => {
+      dispatch(updateFriendRequests(request));
+    });
+
+    return () => {
+      socket?.off("getFriendRequest");
+    };
+  }, [dispatch, socket]);
 
   useEffect(() => {
     dispatch(getLoginStatus());

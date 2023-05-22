@@ -103,7 +103,15 @@ export const deleteFriendRequest = createAsyncThunk(
 const friendSlice = createSlice({
   name: "friend",
   initialState,
-  reducers: {},
+  reducers: {
+    updateFriendRequests(state, action: PayloadAction<UserRequest>) {
+      const friendRequest = action.payload;
+
+      const updatedFriendRequests = [...state.friendRequests, friendRequest];
+
+      state.friendRequests = updatedFriendRequests;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       getFriends.fulfilled,
@@ -163,6 +171,6 @@ const friendSlice = createSlice({
     );
   },
 });
-export const {} = friendSlice.actions;
+export const { updateFriendRequests } = friendSlice.actions;
 
 export default friendSlice.reducer;

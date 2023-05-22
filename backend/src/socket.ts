@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import http from "http";
 import jwt from "jsonwebtoken";
+import query from "./db";
 
 interface CustomSocket extends Socket {
   userId?: number;
@@ -64,6 +65,28 @@ export default function setupSocket() {
     socket.on("disconnect", () => {
       removeUser(socket.id);
     });
+
+    socket.on(
+      "sendFriendRequest",
+      async ({
+        senderId,
+        receiverId,
+      }: {
+        senderId: number;
+        receiverId: number;
+      }) => {
+        const receiverSocketId = getUser(receiverId);
+
+        if (!receiverSocketId) return;
+
+        let q = `SELECT u.user_id AS userId, u.user_name AS userName, u.image, fr.id, fr.status
+        FROM friend_requests fr JOIN users u ON u.user_id = fr.sender WHERE fr.sender = ?`;
+
+        let result: any = await query(q, [senderId]);
+
+        io.to(receiverSocketId).emit("getFriendRequest", result[0]);
+      }
+    );
   });
 
   io.listen(4001);

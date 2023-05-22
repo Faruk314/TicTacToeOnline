@@ -3,7 +3,11 @@ import InvitePlayer from "../cards/InvitePlayer";
 import { getFriendRequests } from "../redux/FriendSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
-const FriendRequests = () => {
+interface Props {
+  socket: any;
+}
+
+const FriendRequests = ({ socket }: Props) => {
   const friendRequests = useAppSelector((state) => state.friend.friendRequests);
   const dispatch = useAppDispatch();
 
@@ -18,7 +22,7 @@ const FriendRequests = () => {
       )}
       <div className="flex flex-col space-y-2 overflow-y-auto min-h-[5rem] max-h-[15rem] p-2">
         {friendRequests.map((req) => (
-          <InvitePlayer key={req.id} friendRequestInfo={req} />
+          <InvitePlayer socket={socket} key={req.id} friendRequestInfo={req} />
         ))}
       </div>
     </div>

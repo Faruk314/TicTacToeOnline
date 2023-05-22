@@ -98,7 +98,7 @@ const MainMenu = ({ socket }: Props) => {
       {openMultiplayer && (
         <Multiplayer setOpen={setOpenMultiplayer} socket={socket} />
       )}
-      {openFriendRequests && <FriendRequests />}
+      {openFriendRequests && <FriendRequests socket={socket} />}
     </section>
   );
 };
