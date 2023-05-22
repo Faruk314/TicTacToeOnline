@@ -87,6 +87,17 @@ export default function setupSocket() {
         io.to(receiverSocketId).emit("getFriendRequest", result[0]);
       }
     );
+
+    socket.on(
+      "deleteFriend",
+      async ({ userId, requestId }: { userId: number; requestId: number }) => {
+        const userSocketId = getUser(userId);
+
+        if (!userSocketId) return;
+
+        io.to(userSocketId).emit("deletedFromFriends", requestId);
+      }
+    );
   });
 
   io.listen(4001);
