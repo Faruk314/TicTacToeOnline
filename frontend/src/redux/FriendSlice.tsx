@@ -86,9 +86,14 @@ export const acceptFriendRequest = createAsyncThunk(
   "friend/acceptFriendRequest",
   async (id: number) => {
     try {
-      await axios.put(`http://localhost:4000/api/friends/acceptFriendRequest`, {
-        id,
-      });
+      const response = await axios.put(
+        `http://localhost:4000/api/friends/acceptFriendRequest`,
+        {
+          id,
+        }
+      );
+
+      return response.data;
     } catch (error) {
       console.log(error);
     }
@@ -99,9 +104,14 @@ export const deleteFriendRequest = createAsyncThunk(
   "friend/deleteFriendRequest",
   async (id: number) => {
     try {
-      await axios.put(`http://localhost:4000/api/friends/deleteFriendRequest`, {
-        id,
-      });
+      const response = await axios.put(
+        `http://localhost:4000/api/friends/deleteFriendRequest`,
+        {
+          id,
+        }
+      );
+
+      return response.data;
     } catch (error) {
       console.log(error);
     }
@@ -136,6 +146,36 @@ const friendSlice = createSlice({
 
         console.log("status", state.friendRequestStatus);
       }
+    );
+
+    builder.addCase(
+      acceptFriendRequest.fulfilled,
+      (state, action: PayloadAction<{ status: number; id: number }>) => {
+        const status: number = action.payload.status;
+        const requestId: number = action.payload.id;
+
+        if (status === 2) {
+          let friendRequest = state.friendRequests.find(
+            (req) => req.id === requestId
+          );
+
+          console.log("friendReq", friendRequest);
+
+          if (friendRequest) {
+            let updatedFriendRequests = state.friendRequests.filter(
+              (req) => req.id !== requestId
+            );
+            state.friendRequests = updatedFriendRequests;
+            friendRequest.status = "accepted";
+            state.friends = [...state.friends, friendRequest];
+          }
+        }
+      }
+    );
+
+    builder.addCase(
+      deleteFriendRequest.fulfilled,
+      (state, action: PayloadAction<{ status: number; id: number }>) => {}
     );
   },
 });
