@@ -40,7 +40,7 @@ const Register = () => {
           name="userName"
           onChange={(e) => setUserName(e.target.value)}
           value={userName}
-          className="p-1 border border-gray-400"
+          className="p-1 py-1 border-b-2 border-black outline-none"
           placeholder="Username"
         />
 
@@ -49,7 +49,7 @@ const Register = () => {
           onChange={(e) => setEmail(e.target.value)}
           value={email}
           type="email"
-          className="p-1 my-2 border border-gray-400"
+          className="p-1 py-1 my-5 border-b-2 border-black outline-none"
           placeholder="Email"
         />
 
@@ -58,7 +58,7 @@ const Register = () => {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
           type="password"
-          className="p-1 py-1 border border-gray-400"
+          className="p-1 py-1 border-b-2 border-black outline-none"
           placeholder="password"
         />
 
