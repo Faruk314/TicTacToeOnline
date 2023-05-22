@@ -17,13 +17,11 @@ import { UserRequest } from "../types/types";
 interface InitialState {
   friends: UserRequest[];
   friendRequests: UserRequest[];
-  friendRequestStatus: number;
 }
 
 const initialState: InitialState = {
   friends: [],
   friendRequests: [],
-  friendRequestStatus: 0,
 };
 
 export const getFriends = createAsyncThunk("friend/getFriends", async () => {
@@ -57,22 +55,6 @@ export const getFriendRequests = createAsyncThunk(
     try {
       const response = await axios.get(
         `http://localhost:4000/api/friends/getFriendRequests`
-      );
-
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
-
-export const checkFriendRequestStatus = createAsyncThunk(
-  "friend/checkFriendRequestStatus",
-  async (personB: number) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:4000/api/friends/checkFriendRequestStatus`,
-        { personB }
       );
 
       return response.data;
@@ -127,24 +109,12 @@ const friendSlice = createSlice({
       getFriends.fulfilled,
       (state, action: PayloadAction<UserRequest[]>) => {
         state.friends = action.payload;
-
-        console.log(state.friends);
       }
     );
     builder.addCase(
       getFriendRequests.fulfilled,
       (state, action: PayloadAction<UserRequest[]>) => {
         state.friendRequests = action.payload;
-
-        console.log("friendRequests", state.friendRequests);
-      }
-    );
-    builder.addCase(
-      checkFriendRequestStatus.fulfilled,
-      (state, action: PayloadAction<{ status: number }>) => {
-        state.friendRequestStatus = action.payload.status;
-
-        console.log("status", state.friendRequestStatus);
       }
     );
 
@@ -158,8 +128,6 @@ const friendSlice = createSlice({
           let friendRequest = state.friendRequests.find(
             (req) => req.id === requestId
           );
-
-          console.log("friendReq", friendRequest);
 
           if (friendRequest) {
             let updatedFriendRequests = state.friendRequests.filter(
@@ -175,7 +143,23 @@ const friendSlice = createSlice({
 
     builder.addCase(
       deleteFriendRequest.fulfilled,
-      (state, action: PayloadAction<{ status: number; id: number }>) => {}
+      (state, action: PayloadAction<{ status: number; id: number }>) => {
+        const requestId: number = action.payload.id;
+        const status: number = action.payload.status;
+
+        if (status === 0) {
+          let updatedFriendRequests = state.friendRequests.filter(
+            (req) => req.id !== requestId
+          );
+          state.friendRequests = updatedFriendRequests;
+
+          let updatedFriends = state.friends.filter(
+            (req) => req.id !== requestId
+          );
+
+          state.friends = updatedFriends;
+        }
+      }
     );
   },
 });
