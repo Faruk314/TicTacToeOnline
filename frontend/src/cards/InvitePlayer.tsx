@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FriendRequests from "../modals/FriendRequests";
 import {
+  acceptFriendRequest,
   checkFriendRequestStatus,
   sendFriendRequest,
 } from "../redux/FriendSlice";
@@ -28,7 +29,7 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
 
   useEffect(() => {
     dispatch(checkFriendRequestStatus(friendRequestInfo.userId));
-  }, [dispatch, friendRequestInfo.userId]);
+  }, [dispatch]);
 
   return (
     <div className="flex items-center justify-between p-2 shadow-md">
@@ -68,7 +69,17 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
         {friendRequestStatus === 1 &&
           loggedUserInfo?.userId !== friendRequestInfo.userId && (
             <div className="flex space-x-2">
-              <button className="p-2 rounded-md hover:bg-gray-100">
+              <button
+                onClick={() => {
+                  if (friendRequestInfo.id) {
+                    dispatch(acceptFriendRequest(friendRequestInfo.id));
+                    dispatch(
+                      checkFriendRequestStatus(friendRequestInfo.userId)
+                    );
+                  }
+                }}
+                className="p-2 rounded-md hover:bg-gray-100"
+              >
                 ACCEPT
               </button>
               <button className="p-2 rounded-md hover:bg-gray-100">

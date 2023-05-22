@@ -82,6 +82,19 @@ export const checkFriendRequestStatus = createAsyncThunk(
   }
 );
 
+export const acceptFriendRequest = createAsyncThunk(
+  "friend/acceptFriendRequest",
+  async (id: number) => {
+    try {
+      await axios.put(`http://localhost:4000/api/friends/acceptFriendRequest`, {
+        id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const friendSlice = createSlice({
   name: "friend",
   initialState,
