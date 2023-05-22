@@ -14,7 +14,11 @@ import {
 import { FaUserFriends } from "react-icons/fa";
 import FriendRequests from "../modals/FriendRequests";
 
-const MainMenu = () => {
+interface Props {
+  socket: any;
+}
+
+const MainMenu = ({ socket }: Props) => {
   const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
@@ -91,7 +95,9 @@ const MainMenu = () => {
 
       <SoundPlayer />
 
-      {openMultiplayer && <Multiplayer setOpen={setOpenMultiplayer} />}
+      {openMultiplayer && (
+        <Multiplayer setOpen={setOpenMultiplayer} socket={socket} />
+      )}
       {openFriendRequests && <FriendRequests />}
     </section>
   );

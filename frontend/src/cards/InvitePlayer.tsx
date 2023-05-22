@@ -12,9 +12,10 @@ import { FriendRequestStatus } from "../types/types";
 
 interface Props {
   friendRequestInfo: UserRequest;
+  socket: any;
 }
 
-const InvitePlayer = ({ friendRequestInfo }: Props) => {
+const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
   const dispatch = useAppDispatch();
   const [isHovering, setIsHovering] = useState(false);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);

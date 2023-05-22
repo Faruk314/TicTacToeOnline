@@ -25,7 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/menu" element={<MainMenu />} />
+        <Route path="/menu" element={<MainMenu socket={socket} />} />
         <Route path="/room/:id" element={<GameRoom />} />
       </Routes>
     </BrowserRouter>

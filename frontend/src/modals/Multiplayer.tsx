@@ -8,13 +8,15 @@ import { getFriends } from "../redux/FriendSlice";
 
 interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  socket: any;
 }
 
 type ModalState = {
   [key: string]: boolean;
 };
 
-const Multiplayer = ({ setOpen }: Props) => {
+const Multiplayer = ({ setOpen, socket }: Props) => {
   const dispatch = useAppDispatch();
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -106,7 +108,11 @@ const Multiplayer = ({ setOpen }: Props) => {
 
             <div className="flex flex-col mt-2 px-1 py-2 space-y-3 overflow-y-auto max-h-[12rem]">
               {friends.map((friend) => (
-                <InvitePlayer key={friend.id} friendRequestInfo={friend} />
+                <InvitePlayer
+                  key={friend.id}
+                  friendRequestInfo={friend}
+                  socket={socket}
+                />
               ))}
             </div>
           </div>
@@ -136,7 +142,11 @@ const Multiplayer = ({ setOpen }: Props) => {
                 <p>No users found</p>
               )}
               {users.map((user) => (
-                <InvitePlayer key={user.userId} friendRequestInfo={user} />
+                <InvitePlayer
+                  socket={socket}
+                  key={user.userId}
+                  friendRequestInfo={user}
+                />
               ))}
             </div>
           </div>
