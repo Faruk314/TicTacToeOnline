@@ -60,6 +60,10 @@ export default function setupSocket() {
     if (socket.userId) {
       addUser(socket.userId, socket.id);
     }
+
+    socket.on("disconnect", () => {
+      removeUser(socket.id);
+    });
   });
 
   io.listen(4001);
