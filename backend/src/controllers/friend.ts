@@ -49,7 +49,7 @@ export const acceptFriendRequest = asyncHandler(
     let result: any = await query(q, ["accepted", requestId]);
 
     if (result.affectedRows === 1) {
-      res.status(200).json("Friend request accepted");
+      res.status(200).json({ status: 2, id: requestId });
     } else {
       res.status(400);
       throw new Error("Failed to accept friend request");
@@ -100,7 +100,7 @@ export const deleteFriendRequest = asyncHandler(
     let result: any = await query(q, [requestId]);
 
     if (result.affectedRows === 1) {
-      res.status(200).json("Friend request deleted successfully");
+      res.status(200).json({ status: 0, id: requestId });
     } else {
       res.status(400);
       throw new Error("Failed to delete friend request");
