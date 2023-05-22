@@ -21,8 +21,8 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
   const [friendRequestStatus, setFriendRequestStatus] =
     useState<FriendRequestStatus | null>(null);
 
-  const friendRequestHandler = () => {
-    dispatch(sendFriendRequest(friendRequestInfo.userId));
+  const friendRequestHandler = async () => {
+    await dispatch(sendFriendRequest(friendRequestInfo.userId));
     checkFriendRequestStatus();
   };
 
@@ -115,7 +115,7 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
             </div>
           )}
 
-        {friendRequestStatus?.status === 2 && (
+        {friendRequestStatus?.status === 2 && friendRequestInfo.id && (
           <div>
             <button
               onClick={() => {
@@ -127,6 +127,12 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
             >
               UNFRIEND
             </button>
+            <button className="p-2 rounded-md hover:bg-gray-100">INVITE</button>
+          </div>
+        )}
+
+        {friendRequestStatus?.status === 2 && !friendRequestInfo.id && (
+          <div className="flex space-x-2">
             <button className="p-2 rounded-md hover:bg-gray-100">INVITE</button>
           </div>
         )}
