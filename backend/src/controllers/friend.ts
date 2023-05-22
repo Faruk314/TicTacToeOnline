@@ -72,14 +72,16 @@ export const checkFriendRequestStatus = asyncHandler(
       "accepted",
     ]);
 
-    if (!result) {
+    if (result.length === 0) {
       //zero indicates that friend request is not sent
       res.json({ status: 0 });
+      return;
     }
 
     if (result && result[0].status === "pending") {
       //1 indicates that friend request is sent
       res.json({ status: 1 });
+      return;
     }
 
     if (result && result[0].status === "accepted") {
