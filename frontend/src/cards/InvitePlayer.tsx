@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import FriendRequests from "../modals/FriendRequests";
 import {
   acceptFriendRequest,
-  checkFriendRequestStatus,
   deleteFriendRequest,
   sendFriendRequest,
 } from "../redux/FriendSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { UserRequest } from "../types/types";
+import axios from "axios";
+import { FriendRequestStatus } from "../types/types";
 
 interface Props {
   friendRequestInfo: UserRequest;
@@ -17,20 +18,31 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
   const dispatch = useAppDispatch();
   const [isHovering, setIsHovering] = useState(false);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
-  const friendRequestStatus = useAppSelector(
-    (state) => state.friend.friendRequestStatus
-  );
-
-  console.log(friendRequestInfo.userName, friendRequestStatus);
+  const [friendRequestStatus, setFriendRequestStatus] =
+    useState<FriendRequestStatus | null>(null);
 
   const friendRequestHandler = () => {
     dispatch(sendFriendRequest(friendRequestInfo.userId));
-    dispatch(checkFriendRequestStatus(friendRequestInfo.userId));
+    checkFriendRequestStatus();
+  };
+
+  const checkFriendRequestStatus = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/api/friends/checkFriendRequestStatus`,
+        { personB: friendRequestInfo.userId }
+      );
+
+      setFriendRequestStatus(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    dispatch(checkFriendRequestStatus(friendRequestInfo.userId));
-  }, [dispatch]);
+    checkFriendRequestStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex items-center justify-between p-2 shadow-md">
@@ -54,7 +66,7 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
       </div>
 
       <div className="flex flex-col font-bold">
-        {friendRequestStatus === 0 && (
+        {friendRequestStatus?.status === 0 && (
           <div>
             <button
               onClick={friendRequestHandler}
@@ -67,8 +79,8 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
           </div>
         )}
 
-        {friendRequestStatus === 1 &&
-          loggedUserInfo?.userId !== friendRequestInfo.userId && (
+        {friendRequestStatus?.status === 1 &&
+          loggedUserInfo?.userId === friendRequestStatus.receiver && (
             <div className="flex space-x-2">
               <button
                 onClick={() => {
@@ -93,8 +105,8 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
             </div>
           )}
 
-        {friendRequestStatus === 1 &&
-          loggedUserInfo?.userId === friendRequestInfo.userId && (
+        {friendRequestStatus?.status === 1 &&
+          loggedUserInfo?.userId === friendRequestStatus.sender && (
             <div className="flex space-x-2">
               <button className="p-2 rounded-md hover:bg-gray-100">SENT</button>
               <button className="p-2 rounded-md hover:bg-gray-100">
@@ -103,7 +115,7 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
             </div>
           )}
 
-        {friendRequestStatus === 2 && (
+        {friendRequestStatus?.status === 2 && (
           <div>
             <button
               onClick={() => {
