@@ -62,7 +62,7 @@ export const checkFriendRequestStatus = asyncHandler(
     const loggedUser = req.user?.userId;
     const personB: number = req.body.personB;
 
-    let q = `SELECT fr.status FROM friend_requests fr WHERE (fr.sender=? OR fr.receiver=?) AND (fr.sender=? OR fr.receiver= ?) AND (fr.status=? OR fr.status=?)`;
+    let q = `SELECT fr.status, fr.sender, fr.receiver FROM friend_requests fr WHERE (fr.sender=? OR fr.receiver=?) AND (fr.sender=? OR fr.receiver= ?) AND (fr.status=? OR fr.status=?)`;
     let result: any = await query(q, [
       loggedUser,
       loggedUser,
@@ -80,13 +80,21 @@ export const checkFriendRequestStatus = asyncHandler(
 
     if (result && result[0].status === "pending") {
       //1 indicates that friend request is sent
-      res.json({ status: 1 });
+      res.json({
+        status: 1,
+        sender: result[0].sender,
+        receiver: result[0].receiver,
+      });
       return;
     }
 
     if (result && result[0].status === "accepted") {
       //2 indicates that logged user and person B are already friends
-      res.json({ status: 2 });
+      res.json({
+        status: 2,
+        sender: result[0].sender,
+        receiver: result[0].receiver,
+      });
     }
   }
 );
