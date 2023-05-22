@@ -17,11 +17,13 @@ import { UserRequest } from "../types/types";
 interface InitialState {
   friends: UserRequest[];
   friendRequests: UserRequest[];
+  friendRequestStatus: number;
 }
 
 const initialState: InitialState = {
   friends: [],
   friendRequests: [],
+  friendRequestStatus: 0,
 };
 
 export const getFriends = createAsyncThunk("friend/getFriends", async () => {
@@ -64,6 +66,22 @@ export const getFriendRequests = createAsyncThunk(
   }
 );
 
+export const checkFriendRequestStatus = createAsyncThunk(
+  "friend/checkFriendRequestStatus",
+  async (personB: number) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/api/friends/checkFriendRequestStatus`,
+        { personB }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const friendSlice = createSlice({
   name: "friend",
   initialState,
@@ -83,6 +101,14 @@ const friendSlice = createSlice({
         state.friendRequests = action.payload;
 
         console.log("friendRequests", state.friendRequests);
+      }
+    );
+    builder.addCase(
+      checkFriendRequestStatus.fulfilled,
+      (state, action: PayloadAction<{ status: number }>) => {
+        state.friendRequestStatus = action.payload.status;
+
+        console.log("status", state.friendRequestStatus);
       }
     );
   },
