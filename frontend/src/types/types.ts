@@ -9,3 +9,9 @@ export interface UserRequest extends User {
   id?: number;
   status?: string;
 }
+
+export interface FriendRequestStatus {
+  status: number;
+  sender?: number;
+  receiver?: number;
+}
