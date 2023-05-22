@@ -95,6 +95,19 @@ export const acceptFriendRequest = createAsyncThunk(
   }
 );
 
+export const deleteFriendRequest = createAsyncThunk(
+  "friend/deleteFriendRequest",
+  async (id: number) => {
+    try {
+      await axios.put(`http://localhost:4000/api/friends/deleteFriendRequest`, {
+        id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const friendSlice = createSlice({
   name: "friend",
   initialState,

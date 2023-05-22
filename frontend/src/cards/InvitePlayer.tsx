@@ -3,6 +3,7 @@ import FriendRequests from "../modals/FriendRequests";
 import {
   acceptFriendRequest,
   checkFriendRequestStatus,
+  deleteFriendRequest,
   sendFriendRequest,
 } from "../redux/FriendSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -73,16 +74,20 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
                 onClick={() => {
                   if (friendRequestInfo.id) {
                     dispatch(acceptFriendRequest(friendRequestInfo.id));
-                    dispatch(
-                      checkFriendRequestStatus(friendRequestInfo.userId)
-                    );
                   }
                 }}
                 className="p-2 rounded-md hover:bg-gray-100"
               >
                 ACCEPT
               </button>
-              <button className="p-2 rounded-md hover:bg-gray-100">
+              <button
+                onClick={() => {
+                  if (friendRequestInfo.id) {
+                    dispatch(deleteFriendRequest(friendRequestInfo.id));
+                  }
+                }}
+                className="p-2 rounded-md hover:bg-gray-100"
+              >
                 REJECT
               </button>
             </div>
@@ -98,9 +103,16 @@ const InvitePlayer = ({ friendRequestInfo }: Props) => {
             </div>
           )}
 
-        {friendRequestStatus === 2 && !friendRequestInfo.id && (
+        {friendRequestStatus === 2 && (
           <div>
-            <button className="p-2 rounded-md hover:bg-gray-100">
+            <button
+              onClick={() => {
+                if (friendRequestInfo.id) {
+                  dispatch(deleteFriendRequest(friendRequestInfo.id));
+                }
+              }}
+              className="p-2 rounded-md hover:bg-gray-100"
+            >
               UNFRIEND
             </button>
             <button className="p-2 rounded-md hover:bg-gray-100">INVITE</button>
