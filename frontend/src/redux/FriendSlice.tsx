@@ -111,6 +111,15 @@ const friendSlice = createSlice({
 
       state.friendRequests = updatedFriendRequests;
     },
+    deleteFriend(state, action) {
+      const requestId: number = action.payload;
+
+      const updatedFriends = state.friends.filter(
+        (friend) => friend.id !== requestId
+      );
+
+      state.friends = updatedFriends;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -171,6 +180,6 @@ const friendSlice = createSlice({
     );
   },
 });
-export const { updateFriendRequests } = friendSlice.actions;
+export const { updateFriendRequests, deleteFriend } = friendSlice.actions;
 
 export default friendSlice.reducer;

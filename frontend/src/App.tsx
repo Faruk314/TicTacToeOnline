@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { getLoginStatus } from "./redux/AuthSlice";
 import { useSocket } from "./hooks/useSocket";
 import { UserRequest } from "./types/types";
-import { updateFriendRequests } from "./redux/FriendSlice";
+import { deleteFriend, updateFriendRequests } from "./redux/FriendSlice";
 
 axios.defaults.withCredentials = true;
 
@@ -25,6 +25,16 @@ function App() {
 
     return () => {
       socket?.off("getFriendRequest");
+    };
+  }, [dispatch, socket]);
+
+  useEffect(() => {
+    socket?.on("deletedFromFriends", (requestId: number) => {
+      dispatch(deleteFriend(requestId));
+    });
+
+    return () => {
+      socket?.off("deletedFromFriends");
     };
   }, [dispatch, socket]);
 

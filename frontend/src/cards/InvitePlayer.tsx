@@ -126,6 +126,10 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
               onClick={() => {
                 if (friendRequestInfo.id) {
                   dispatch(deleteFriendRequest(friendRequestInfo.id));
+                  socket.emit("deleteFriend", {
+                    userId: friendRequestInfo.userId,
+                    requestId: friendRequestInfo.id,
+                  });
                 }
               }}
               className="p-2 rounded-md hover:bg-gray-100"
