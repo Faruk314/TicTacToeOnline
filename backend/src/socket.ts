@@ -31,9 +31,35 @@ export default function setupSocket() {
     }
   });
 
+  let users = new Map<number, string>();
+
+  const addUser = (userId: number, socketId: string) => {
+    if (!users.has(userId)) {
+      users.set(userId, socketId);
+    }
+  };
+
+  const removeUser = (socketId: string) => {
+    const userEntries = [...users.entries()];
+
+    const usersEntriesFilterd = userEntries.filter(
+      ([_, value]) => value !== socketId
+    );
+
+    users = new Map(usersEntriesFilterd);
+  };
+
+  const getUser = (userId: number) => {
+    return users.get(userId);
+  };
+
   io.on("connection", (socket: CustomSocket) => {
     // Handle socket events
     console.log("New socket connection:", socket.userId);
+
+    if (socket.userId) {
+      addUser(socket.userId, socket.id);
+    }
   });
 
   io.listen(4001);
