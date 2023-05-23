@@ -109,15 +109,18 @@ export default function setupSocket() {
         receiverId: number;
       }) => {
         const receiverSocketId = getUser(receiverId);
+        const senderSocketId = getUser(senderId);
 
-        if (!receiverSocketId) return;
+        if (!receiverSocketId || !senderSocketId) return;
 
         let q =
           "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
 
         let result: any = await query(q, [senderId]);
+        const message = `Waiting for player to accept the game invite`;
 
         io.to(receiverSocketId).emit("gameInvite", result[0]);
+        io.to(senderSocketId).emit("gameInvitePending", message);
       }
     );
 

@@ -11,13 +11,17 @@ import { useSocket } from "./hooks/useSocket";
 import { User, UserRequest } from "./types/types";
 import { deleteFriend, updateFriendRequests } from "./redux/FriendSlice";
 import GameInvite from "./modals/GameInvite";
-import { openGameInviteModal } from "./redux/GameSlice";
+import { openGameInviteModal, openInvitePendingModal } from "./redux/GameSlice";
+import GameInvitePending from "./modals/GameInvitePending";
 
 axios.defaults.withCredentials = true;
 
 function App() {
   const dispatch = useAppDispatch();
   const gameInviteOpen = useAppSelector((state) => state.game.gameInviteOpen);
+  const invitePendingModalOpen = useAppSelector(
+    (state) => state.game.invitePendingModalOpen
+  );
   const socket = useSocket();
 
   useEffect(() => {
@@ -51,6 +55,16 @@ function App() {
   }, [dispatch, socket]);
 
   useEffect(() => {
+    socket?.on("gameInvitePending", (message: string) => {
+      dispatch(openInvitePendingModal(message));
+    });
+
+    return () => {
+      socket?.off("gameInvitePending");
+    };
+  }, [dispatch, socket]);
+
+  useEffect(() => {
     dispatch(getLoginStatus());
   }, [dispatch]);
 
@@ -63,6 +77,7 @@ function App() {
         <Route path="/room/:id" element={<GameRoom />} />
       </Routes>
       {gameInviteOpen && <GameInvite />}
+      {invitePendingModalOpen && <GameInvitePending />}
     </BrowserRouter>
   );
 }

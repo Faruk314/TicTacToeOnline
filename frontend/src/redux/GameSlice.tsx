@@ -4,11 +4,15 @@ import { User } from "../types/types";
 interface InitialState {
   gameInviteOpen: boolean;
   inviterInfo: User | null;
+  invitePendingMessage: string | null;
+  invitePendingModalOpen: boolean;
 }
 
 const initialState: InitialState = {
   gameInviteOpen: false,
   inviterInfo: null,
+  invitePendingMessage: null,
+  invitePendingModalOpen: false,
 };
 
 const gameSlice = createSlice({
@@ -23,9 +27,22 @@ const gameSlice = createSlice({
       state.gameInviteOpen = false;
       state.inviterInfo = null;
     },
+    openInvitePendingModal(state, action: PayloadAction<string | null>) {
+      state.invitePendingMessage = action.payload;
+      state.invitePendingModalOpen = true;
+    },
+    closeInvitePendingModal(state) {
+      state.invitePendingMessage = null;
+      state.invitePendingModalOpen = false;
+    },
   },
 });
 
-export const { openGameInviteModal, closeGameInviteModal } = gameSlice.actions;
+export const {
+  openGameInviteModal,
+  closeGameInviteModal,
+  openInvitePendingModal,
+  closeInvitePendingModal,
+} = gameSlice.actions;
 
 export default gameSlice.reducer;
