@@ -98,6 +98,30 @@ export default function setupSocket() {
         io.to(userSocketId).emit("deletedFromFriends", requestId);
       }
     );
+
+    socket.on(
+      "sendInvite",
+      async ({
+        senderId,
+        receiverId,
+      }: {
+        senderId: number;
+        receiverId: number;
+      }) => {
+        const receiverSocketId = getUser(receiverId);
+
+        if (!receiverSocketId) return;
+
+        let q =
+          "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
+
+        let result: any = await query(q, [senderId]);
+
+        io.to(receiverSocketId).emit("gameInvite", result[0]);
+      }
+    );
+
+    // socket.on("acceptInvite");
   });
 
   io.listen(4001);
