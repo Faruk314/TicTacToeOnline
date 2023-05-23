@@ -111,7 +111,27 @@ export default function setupSocket() {
       io.to(senderSocketId).emit("gameInvitePending", message);
     });
 
-    socket.on("acceptInvite", async ({ senderId, receiverId }: Request) => {});
+    socket.on("acceptInvite", async ({ senderId, receiverId }: Request) => {
+      const gameRoomId = uuidv4();
+
+      const senderSocketId = getUser(senderId);
+      const receiverSocketId = getUser(receiverId);
+
+      if (!receiverSocketId || !senderSocketId) return;
+
+      const senderSocket: Socket | undefined =
+        io.sockets.sockets.get(senderSocketId);
+      const receiverSocket: Socket | undefined =
+        io.sockets.sockets.get(receiverSocketId);
+
+      if (senderSocket && receiverSocket) {
+        senderSocket.join(gameRoomId);
+        receiverSocket.join(gameRoomId);
+
+        io.to(receiverSocketId).emit("gameStart", gameRoomId);
+        io.to(senderSocketId).emit("gameStart", gameRoomId);
+      }
+    });
   });
 
   io.listen(4001);
