@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "../types/types";
+import { Message, User } from "../types/types";
 
 interface InitialState {
   gameInviteOpen: boolean;
@@ -7,6 +7,7 @@ interface InitialState {
   invitePendingMessage: string | null;
   invitePendingModalOpen: boolean;
   roomId: string | null;
+  messages: Message[];
 }
 
 const initialState: InitialState = {
@@ -15,6 +16,7 @@ const initialState: InitialState = {
   invitePendingMessage: null,
   invitePendingModalOpen: false,
   roomId: null,
+  messages: [],
 };
 
 const gameSlice = createSlice({
@@ -38,6 +40,9 @@ const gameSlice = createSlice({
     saveGameRoom(state, action: PayloadAction<string>) {
       state.roomId = action.payload;
     },
+    saveMessage(state, action: PayloadAction<Message>) {
+      state.messages = [...state.messages, action.payload];
+    },
   },
 });
 
@@ -47,6 +52,7 @@ export const {
   openInvitePendingModal,
   closeInvitePendingModal,
   saveGameRoom,
+  saveMessage,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

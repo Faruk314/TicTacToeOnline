@@ -15,3 +15,9 @@ export interface FriendRequestStatus {
   sender?: number;
   receiver?: number;
 }
+
+export interface Message {
+  id: string;
+  senderName: string;
+  message: string;
+}

@@ -2,13 +2,14 @@ import React from "react";
 
 interface Props {
   message: string;
+  senderName: string;
 }
 
-const Message = ({ message }: Props) => {
+const Message = ({ message, senderName }: Props) => {
   return (
     <div className="p-2">
       <div className="flex space-x-1">
-        <span className="font-bold">Faruk:</span>
+        <span className="font-bold">{senderName}:</span>
         <p className="break-all">{message}</p>
       </div>
     </div>

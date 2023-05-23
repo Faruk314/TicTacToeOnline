@@ -74,7 +74,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/menu" element={<MainMenu socket={socket} />} />
-        <Route path="/room/:id" element={<GameRoom />} />
+        <Route path="/room/:id" element={<GameRoom socket={socket} />} />
       </Routes>
       {gameInviteOpen && <GameInvite socket={socket} />}
       {invitePendingModalOpen && <GameInvitePending />}

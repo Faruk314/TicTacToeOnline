@@ -132,6 +132,25 @@ export default function setupSocket() {
         io.to(senderSocketId).emit("gameStart", gameRoomId);
       }
     });
+
+    socket.on(
+      "sendMessage",
+      ({
+        message,
+        roomId,
+        senderName,
+      }: {
+        message: string;
+        roomId: string;
+        senderName: string;
+      }) => {
+        io.to(roomId).emit("receiveMessage", {
+          id: uuidv4(),
+          message,
+          senderName,
+        });
+      }
+    );
   });
 
   io.listen(4001);
