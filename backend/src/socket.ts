@@ -104,11 +104,15 @@ export default function setupSocket() {
       let q =
         "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
 
-      let result: any = await query(q, [senderId]);
-      const message = `Waiting for player to accept the game invite`;
+      let senderInfo: any = await query(q, [senderId]);
 
-      io.to(receiverSocketId).emit("gameInvite", result[0]);
-      io.to(senderSocketId).emit("gameInvitePending", message);
+      q =
+        "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
+
+      let receiverInfo: any = await query(q, [receiverId]);
+
+      io.to(receiverSocketId).emit("gameInvite", senderInfo[0]);
+      io.to(senderSocketId).emit("gameInvitePending", receiverInfo[0]);
     });
 
     socket.on("acceptInvite", async ({ senderId, receiverId }: Request) => {

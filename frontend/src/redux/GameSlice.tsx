@@ -3,8 +3,7 @@ import { Message, User } from "../types/types";
 
 interface InitialState {
   gameInviteOpen: boolean;
-  inviterInfo: User | null;
-  invitePendingMessage: string | null;
+  otherPlayerInfo: User | null;
   invitePendingModalOpen: boolean;
   roomId: string | null;
   messages: Message[];
@@ -12,8 +11,7 @@ interface InitialState {
 
 const initialState: InitialState = {
   gameInviteOpen: false,
-  inviterInfo: null,
-  invitePendingMessage: null,
+  otherPlayerInfo: null,
   invitePendingModalOpen: false,
   roomId: null,
   messages: [],
@@ -25,13 +23,13 @@ const gameSlice = createSlice({
   reducers: {
     openGameInviteModal(state, action: PayloadAction<User>) {
       state.gameInviteOpen = true;
-      state.inviterInfo = action.payload;
+      state.otherPlayerInfo = action.payload;
     },
     closeGameInviteModal(state) {
       state.gameInviteOpen = false;
     },
-    openInvitePendingModal(state, action: PayloadAction<string | null>) {
-      state.invitePendingMessage = action.payload;
+    openInvitePendingModal(state, action: PayloadAction<User>) {
+      state.otherPlayerInfo = action.payload;
       state.invitePendingModalOpen = true;
     },
     closeInvitePendingModal(state) {

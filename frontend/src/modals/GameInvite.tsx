@@ -9,7 +9,7 @@ interface Props {
 
 const GameInvite = ({ socket }: Props) => {
   const dispatch = useAppDispatch();
-  const inviterInfo = useAppSelector((state) => state.game.inviterInfo);
+  const inviterInfo = useAppSelector((state) => state.game.otherPlayerInfo);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
 
   return (

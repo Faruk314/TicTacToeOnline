@@ -5,12 +5,11 @@ import { playClickSound } from "../redux/SoundSlice";
 
 const GameInvitePending = () => {
   const dispatch = useAppDispatch();
-  const message = useAppSelector((state) => state.game.invitePendingMessage);
 
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center text-center bg-[rgb(0,0,0,0.5)]">
       <div className="relative z-30 flex flex-col items-center justify-center px-5 py-2 mx-2 space-y-4 bg-white rounded-md shadow-xl">
-        <p>{message}</p>
+        <p>Waiting for player to accept invitation</p>
 
         <div className="loader"></div>
 

@@ -55,8 +55,8 @@ function App() {
   }, [dispatch, socket]);
 
   useEffect(() => {
-    socket?.on("gameInvitePending", (message: string) => {
-      dispatch(openInvitePendingModal(message));
+    socket?.on("gameInvitePending", (data: User) => {
+      dispatch(openInvitePendingModal(data));
     });
 
     return () => {

@@ -1,6 +1,11 @@
 import React from "react";
+import { User } from "../types/types";
 
-const Player = () => {
+interface Props {
+  playerInfo: User | null;
+}
+
+const Player = ({ playerInfo }: Props) => {
   return (
     <div className="flex flex-col items-center space-y-2">
       <div className="relative">
@@ -15,7 +20,7 @@ const Player = () => {
       </div>
 
       <div className="px-5 font-bold text-center text-white bg-black rounded-lg">
-        <p>Faruk</p>
+        <p>{playerInfo?.userName}</p>
       </div>
 
       <p className="text-4xl">1</p>

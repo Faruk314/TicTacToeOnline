@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Chat from "../components/Chat";
 import SoundPlayer from "../components/SoundPlayer";
 import { Message } from "../types/types";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { saveMessage } from "../redux/GameSlice";
 
 interface Props {
@@ -14,6 +14,8 @@ interface Props {
 
 const GameRoom = ({ socket }: Props) => {
   const dispatch = useAppDispatch();
+  const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
+  const otherPlayerInfo = useAppSelector((state) => state.game.otherPlayerInfo);
 
   useEffect(() => {
     socket.on("receiveMessage", (message: Message) => {
@@ -30,11 +32,11 @@ const GameRoom = ({ socket }: Props) => {
       <Navbar />
 
       <div className="flex justify-between px-4 py-10">
-        <Player />
+        <Player playerInfo={loggedUserInfo} />
 
         <span className="self-center text-2xl font-bold">VS</span>
 
-        <Player />
+        <Player playerInfo={otherPlayerInfo} />
       </div>
 
       <Board />
