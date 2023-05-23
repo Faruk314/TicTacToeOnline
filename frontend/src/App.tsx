@@ -10,12 +10,13 @@ import { getLoginStatus } from "./redux/AuthSlice";
 import { useSocket } from "./hooks/useSocket";
 import { UserRequest } from "./types/types";
 import { deleteFriend, updateFriendRequests } from "./redux/FriendSlice";
+import GameInvite from "./modals/GameInvite";
 
 axios.defaults.withCredentials = true;
 
 function App() {
   const dispatch = useAppDispatch();
-
+  const gameInviteOpen = useAppSelector((state) => state.game.gameInviteOpen);
   const socket = useSocket();
 
   useEffect(() => {
@@ -50,6 +51,7 @@ function App() {
         <Route path="/menu" element={<MainMenu socket={socket} />} />
         <Route path="/room/:id" element={<GameRoom />} />
       </Routes>
+      {gameInviteOpen && <GameInvite />}
     </BrowserRouter>
   );
 }
