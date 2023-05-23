@@ -80,7 +80,17 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
               ADD
             </button>
 
-            <button className="p-2 rounded-md hover:bg-gray-100">INVITE</button>
+            <button
+              onClick={() =>
+                socket.emit("sendInvite", {
+                  senderId: loggedUserInfo?.userId,
+                  receiverId: friendRequestInfo.userId,
+                })
+              }
+              className="p-2 rounded-md hover:bg-gray-100"
+            >
+              INVITE
+            </button>
           </div>
         )}
 

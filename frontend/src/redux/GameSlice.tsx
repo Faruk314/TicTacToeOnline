@@ -1,23 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { User } from "../types/types";
 
 interface InitialState {
   gameInviteOpen: boolean;
+  inviterInfo: User | null;
 }
 
 const initialState: InitialState = {
-  gameInviteOpen: true,
+  gameInviteOpen: false,
+  inviterInfo: null,
 };
 
 const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    setGameInviteModal(state, action) {
-      state.gameInviteOpen = action.payload;
+    openGameInviteModal(state, action: PayloadAction<User>) {
+      state.gameInviteOpen = true;
+      state.inviterInfo = action.payload;
+    },
+    closeGameInviteModal(state) {
+      state.gameInviteOpen = false;
+      state.inviterInfo = null;
     },
   },
 });
 
-export const { setGameInviteModal } = gameSlice.actions;
+export const { openGameInviteModal, closeGameInviteModal } = gameSlice.actions;
 
 export default gameSlice.reducer;

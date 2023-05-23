@@ -1,10 +1,11 @@
 import React from "react";
-import { setGameInviteModal } from "../redux/GameSlice";
-import { useAppDispatch } from "../redux/hooks";
+import { closeGameInviteModal } from "../redux/GameSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 
 const GameInvite = () => {
   const dispatch = useAppDispatch();
+  const inviterInfo = useAppSelector((state) => state.game.inviterInfo);
 
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center text-center bg-[rgb(0,0,0,0.5)]">
@@ -16,7 +17,7 @@ const GameInvite = () => {
           />
 
           <div className="px-5 font-bold text-center text-white bg-black rounded-lg">
-            <p>Faruk</p>
+            <p>{inviterInfo?.userName}</p>
           </div>
 
           <p>wants to play against you!</p>
@@ -26,7 +27,7 @@ const GameInvite = () => {
           <button
             onClick={() => {
               dispatch(playClickSound("/sounds/click.wav"));
-              dispatch(setGameInviteModal(false));
+              dispatch(closeGameInviteModal());
             }}
             className="px-2 font-bold bg-white border-2 border-black rounded-full hover:bg-gray-200"
           >
@@ -36,7 +37,6 @@ const GameInvite = () => {
           <button
             onClick={() => {
               dispatch(playClickSound("/sounds/click.wav"));
-              dispatch(setGameInviteModal(false));
             }}
             className="px-2 font-bold bg-white border-2 border-black rounded-full hover:bg-gray-200"
           >

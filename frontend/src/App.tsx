@@ -8,9 +8,10 @@ import axios from "axios";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { getLoginStatus } from "./redux/AuthSlice";
 import { useSocket } from "./hooks/useSocket";
-import { UserRequest } from "./types/types";
+import { User, UserRequest } from "./types/types";
 import { deleteFriend, updateFriendRequests } from "./redux/FriendSlice";
 import GameInvite from "./modals/GameInvite";
+import { openGameInviteModal } from "./redux/GameSlice";
 
 axios.defaults.withCredentials = true;
 
@@ -36,6 +37,16 @@ function App() {
 
     return () => {
       socket?.off("deletedFromFriends");
+    };
+  }, [dispatch, socket]);
+
+  useEffect(() => {
+    socket?.on("gameInvite", (data: User) => {
+      dispatch(openGameInviteModal(data));
+    });
+
+    return () => {
+      socket?.off("gameInvite");
     };
   }, [dispatch, socket]);
 
