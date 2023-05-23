@@ -13,6 +13,11 @@ import {
 } from "../redux/SoundSlice";
 import { FaUserFriends } from "react-icons/fa";
 import FriendRequests from "../modals/FriendRequests";
+import {
+  closeGameInviteModal,
+  closeInvitePendingModal,
+  saveGameRoom,
+} from "../redux/GameSlice";
 
 interface Props {
   socket: any;
@@ -33,14 +38,17 @@ const MainMenu = ({ socket }: Props) => {
 
   // gameStart
   useEffect(() => {
-    socket?.on("gameStart", (gameRoomId: number) => {
+    socket?.on("gameStart", (gameRoomId: string) => {
+      dispatch(closeGameInviteModal());
+      dispatch(closeInvitePendingModal());
+      dispatch(saveGameRoom(gameRoomId));
       navigate(`/room/${gameRoomId}`);
     });
 
     return () => {
       socket?.off("gameStart");
     };
-  }, [socket, navigate]);
+  }, [socket, navigate, dispatch]);
 
   return (
     <section className="flex flex-col items-center text-center justify-center h-[100vh]">

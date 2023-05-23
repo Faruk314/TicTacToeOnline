@@ -6,6 +6,7 @@ interface InitialState {
   inviterInfo: User | null;
   invitePendingMessage: string | null;
   invitePendingModalOpen: boolean;
+  roomId: string | null;
 }
 
 const initialState: InitialState = {
@@ -13,6 +14,7 @@ const initialState: InitialState = {
   inviterInfo: null,
   invitePendingMessage: null,
   invitePendingModalOpen: false,
+  roomId: null,
 };
 
 const gameSlice = createSlice({
@@ -25,15 +27,16 @@ const gameSlice = createSlice({
     },
     closeGameInviteModal(state) {
       state.gameInviteOpen = false;
-      state.inviterInfo = null;
     },
     openInvitePendingModal(state, action: PayloadAction<string | null>) {
       state.invitePendingMessage = action.payload;
       state.invitePendingModalOpen = true;
     },
     closeInvitePendingModal(state) {
-      state.invitePendingMessage = null;
       state.invitePendingModalOpen = false;
+    },
+    saveGameRoom(state, action: PayloadAction<string>) {
+      state.roomId = action.payload;
     },
   },
 });
@@ -43,6 +46,7 @@ export const {
   closeGameInviteModal,
   openInvitePendingModal,
   closeInvitePendingModal,
+  saveGameRoom,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
