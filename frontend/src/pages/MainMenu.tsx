@@ -31,6 +31,17 @@ const MainMenu = ({ socket }: Props) => {
     navigate("/");
   };
 
+  // gameStart
+  useEffect(() => {
+    socket?.on("gameStart", (gameRoomId: number) => {
+      navigate(`/room/${gameRoomId}`);
+    });
+
+    return () => {
+      socket?.off("gameStart");
+    };
+  }, [socket, navigate]);
+
   return (
     <section className="flex flex-col items-center text-center justify-center h-[100vh]">
       <button
