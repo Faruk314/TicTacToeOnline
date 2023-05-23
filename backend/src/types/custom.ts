@@ -4,3 +4,8 @@ export interface User {
   email: string;
   image: string | null;
 }
+
+export interface Request {
+  senderId: number;
+  receiverId: number;
+}

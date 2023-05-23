@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import http from "http";
 import jwt from "jsonwebtoken";
 import query from "./db";
+import { Request } from "./types/custom";
 
 interface CustomSocket extends Socket {
   userId?: number;
@@ -68,13 +69,7 @@ export default function setupSocket() {
 
     socket.on(
       "sendFriendRequest",
-      async ({
-        senderId,
-        receiverId,
-      }: {
-        senderId: number;
-        receiverId: number;
-      }) => {
+      async ({ senderId, receiverId }: Request) => {
         const receiverSocketId = getUser(receiverId);
 
         if (!receiverSocketId) return;
@@ -99,32 +94,23 @@ export default function setupSocket() {
       }
     );
 
-    socket.on(
-      "sendInvite",
-      async ({
-        senderId,
-        receiverId,
-      }: {
-        senderId: number;
-        receiverId: number;
-      }) => {
-        const receiverSocketId = getUser(receiverId);
-        const senderSocketId = getUser(senderId);
+    socket.on("sendInvite", async ({ senderId, receiverId }: Request) => {
+      const receiverSocketId = getUser(receiverId);
+      const senderSocketId = getUser(senderId);
 
-        if (!receiverSocketId || !senderSocketId) return;
+      if (!receiverSocketId || !senderSocketId) return;
 
-        let q =
-          "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
+      let q =
+        "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
 
-        let result: any = await query(q, [senderId]);
-        const message = `Waiting for player to accept the game invite`;
+      let result: any = await query(q, [senderId]);
+      const message = `Waiting for player to accept the game invite`;
 
-        io.to(receiverSocketId).emit("gameInvite", result[0]);
-        io.to(senderSocketId).emit("gameInvitePending", message);
-      }
-    );
+      io.to(receiverSocketId).emit("gameInvite", result[0]);
+      io.to(senderSocketId).emit("gameInvitePending", message);
+    });
 
-    // socket.on("acceptInvite");
+    socket.on("acceptInvite", async ({ senderId, receiverId }: Request) => {});
   });
 
   io.listen(4001);
