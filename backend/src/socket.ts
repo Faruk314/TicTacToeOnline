@@ -3,6 +3,7 @@ import http from "http";
 import jwt from "jsonwebtoken";
 import query from "./db";
 import { Request } from "./types/custom";
+import { v4 as uuidv4 } from "uuid";
 
 interface CustomSocket extends Socket {
   userId?: number;
