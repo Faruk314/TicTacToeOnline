@@ -12,7 +12,106 @@ const client = new Redis({
   port: 6379,
 });
 
-const createNewGame = (): Game => ({
+const checkGameStatus = (gameId: string) => {
+  client.get(gameId, (err, result) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    const newState = result ? JSON.parse(result) : null;
+
+    const caseOne =
+      newState.board[0][0] === newState.playerTurn &&
+      newState.board[0][1] === newState.playerTurn &&
+      newState.board[0][2] === newState.playerTurn;
+    const caseTwo =
+      newState.board[1][0] === newState.playerTurn &&
+      newState.board[1][1] === newState.playerTurn &&
+      newState.board[1][2] === newState.playerTurn;
+    const caseThree =
+      newState.board[2][0] === newState.playerTurn &&
+      newState.board[2][1] === newState.playerTurn &&
+      newState.board[2][2] === newState.playerTurn;
+    const caseFour =
+      newState.board[0][0] === newState.playerTurn &&
+      newState.board[1][0] === newState.playerTurn &&
+      newState.board[2][0] === newState.playerTurn;
+    const caseFive =
+      newState.board[0][1] === newState.playerTurn &&
+      newState.board[1][1] === newState.playerTurn &&
+      newState.board[2][1] === newState.playerTurn;
+    const caseSix =
+      newState.board[0][2] === newState.playerTurn &&
+      newState.board[1][2] === newState.playerTurn &&
+      newState.board[2][2] === newState.playerTurn;
+    const caseSeven =
+      newState.board[0][2] === newState.playerTurn &&
+      newState.board[1][1] === newState.playerTurn &&
+      newState.board[2][0] === newState.playerTurn;
+    const caseEight =
+      newState.board[0][0] === newState.playerTurn &&
+      newState.board[1][1] === newState.playerTurn &&
+      newState.board[2][2] === newState.playerTurn;
+
+    if (
+      caseOne ||
+      caseTwo ||
+      caseThree ||
+      caseFour ||
+      caseFive ||
+      caseSix ||
+      caseSeven ||
+      caseEight
+    ) {
+      if (newState.playerTurn === "X") {
+        newState.message = "X-WINS";
+      } else {
+        newState.message = "O-WINS";
+      }
+
+      newState.isGameOver = true;
+
+      return client.set(gameId, JSON.stringify(newState));
+    }
+
+    let isDraw = newState.board
+      .flat()
+      .every((sign) => sign === "X" || sign === "O");
+
+    if (isDraw) {
+      newState.message = "DRAW";
+      newState.isGameOver = true;
+
+      return client.set(gameId, JSON.stringify(newState));
+    }
+
+    newState.playerTurn = newState.playerTurn === "X" ? "O" : "X";
+
+    return client.set(gameId, JSON.stringify(newState));
+  });
+};
+
+const playerMove = (row: number, col: number, gameId: string) => {
+  client.get(gameId, (err, result) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    const newState = result ? JSON.parse(result) : null;
+
+    newState.board[row][col] = newState.playerTurn;
+
+    client.set(gameId, newState);
+  });
+  // let newBoard = [...board];
+  // newBoard[row][col] = playerTurn;
+  // setBoard(newBoard);
+  // checkGameStatus();
+};
+
+const createNewGame = (senderId: number, receiverId: number): Game => ({
   board: [
     ["", "", ""],
     ["", "", ""],
@@ -21,6 +120,7 @@ const createNewGame = (): Game => ({
   playerTurn: "X",
   isGameOver: false,
   message: "",
+  players: { X: senderId, O: receiverId },
 });
 
 interface CustomSocket extends Socket {
@@ -150,7 +250,7 @@ export default function setupSocket() {
         senderSocket.join(gameRoomId);
         receiverSocket.join(gameRoomId);
 
-        const gameState: Game = createNewGame();
+        const gameState: Game = createNewGame(senderId, receiverId);
 
         client.set(gameRoomId, JSON.stringify(gameState));
 
@@ -158,6 +258,36 @@ export default function setupSocket() {
         io.to(senderSocketId).emit("gameStart", gameRoomId);
       }
     });
+
+    socket.on("requestGameState", async ({ gameId }: { gameId: string }) => {
+      const userId: number | undefined = socket.userId;
+
+      if (!userId) return;
+
+      const userSocketId = getUser(userId);
+
+      if (!userSocketId) return;
+
+      client.get(gameId, (err, result) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        const gameState = result ? JSON.parse(result) : null;
+
+        io.to(userSocketId).emit("gameStateResponse", gameState);
+      });
+    });
+
+    socket.on(
+      "playerMove",
+      async (row: number, col: number, gameId: string) => {
+        playerMove(row, col, gameId);
+
+        checkGameStatus(gameId);
+      }
+    );
 
     socket.on(
       "sendMessage",
