@@ -39,7 +39,7 @@ const GameRoom = ({ socket }: Props) => {
         <Player playerInfo={otherPlayerInfo} />
       </div>
 
-      <Board />
+      <Board socket={socket} />
 
       <Chat socket={socket} />
 

@@ -4,6 +4,24 @@ import jwt from "jsonwebtoken";
 import query from "./db";
 import { Request } from "./types/custom";
 import { v4 as uuidv4 } from "uuid";
+import { Game } from "./types/custom";
+import { Redis } from "ioredis";
+
+const client = new Redis({
+  host: "localhost",
+  port: 6379,
+});
+
+const createNewGame = (): Game => ({
+  board: [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ],
+  playerTurn: "X",
+  isGameOver: false,
+  message: "",
+});
 
 interface CustomSocket extends Socket {
   userId?: number;
@@ -116,7 +134,7 @@ export default function setupSocket() {
     });
 
     socket.on("acceptInvite", async ({ senderId, receiverId }: Request) => {
-      const gameRoomId = uuidv4();
+      const gameRoomId: string = uuidv4();
 
       const senderSocketId = getUser(senderId);
       const receiverSocketId = getUser(receiverId);
@@ -131,6 +149,10 @@ export default function setupSocket() {
       if (senderSocket && receiverSocket) {
         senderSocket.join(gameRoomId);
         receiverSocket.join(gameRoomId);
+
+        const gameState: Game = createNewGame();
+
+        client.set(gameRoomId, JSON.stringify(gameState));
 
         io.to(receiverSocketId).emit("gameStart", gameRoomId);
         io.to(senderSocketId).emit("gameStart", gameRoomId);
