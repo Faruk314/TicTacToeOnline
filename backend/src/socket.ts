@@ -13,130 +13,119 @@ const client = new Redis({
 });
 
 const checkGameStatus = async (gameId: string) => {
-  try {
-    const result = await new Promise<string | null>((resolve, reject) => {
-      client.get(gameId, (err, result: any) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result);
-      });
-    });
+  const data = await client.get(gameId);
 
-    if (!result) {
-      console.log("gameState not found");
-      return;
-    }
-
-    const newState = JSON.parse(result);
-
-    const caseOne =
-      newState.board[0][0] === newState.playerTurn &&
-      newState.board[0][1] === newState.playerTurn &&
-      newState.board[0][2] === newState.playerTurn;
-    const caseTwo =
-      newState.board[1][0] === newState.playerTurn &&
-      newState.board[1][1] === newState.playerTurn &&
-      newState.board[1][2] === newState.playerTurn;
-    const caseThree =
-      newState.board[2][0] === newState.playerTurn &&
-      newState.board[2][1] === newState.playerTurn &&
-      newState.board[2][2] === newState.playerTurn;
-    const caseFour =
-      newState.board[0][0] === newState.playerTurn &&
-      newState.board[1][0] === newState.playerTurn &&
-      newState.board[2][0] === newState.playerTurn;
-    const caseFive =
-      newState.board[0][1] === newState.playerTurn &&
-      newState.board[1][1] === newState.playerTurn &&
-      newState.board[2][1] === newState.playerTurn;
-    const caseSix =
-      newState.board[0][2] === newState.playerTurn &&
-      newState.board[1][2] === newState.playerTurn &&
-      newState.board[2][2] === newState.playerTurn;
-    const caseSeven =
-      newState.board[0][2] === newState.playerTurn &&
-      newState.board[1][1] === newState.playerTurn &&
-      newState.board[2][0] === newState.playerTurn;
-    const caseEight =
-      newState.board[0][0] === newState.playerTurn &&
-      newState.board[1][1] === newState.playerTurn &&
-      newState.board[2][2] === newState.playerTurn;
-
-    if (
-      caseOne ||
-      caseTwo ||
-      caseThree ||
-      caseFour ||
-      caseFive ||
-      caseSix ||
-      caseSeven ||
-      caseEight
-    ) {
-      if (newState.playerTurn === "X") {
-        newState.message = "X-WINS";
-      } else {
-        newState.message = "O-WINS";
-      }
-
-      newState.isGameOver = true;
-
-      return client.set(gameId, JSON.stringify(newState));
-    }
-
-    let isDraw = newState.board
-      .flat()
-      .every((sign) => sign === "X" || sign === "O");
-
-    if (isDraw) {
-      newState.message = "DRAW";
-      newState.isGameOver = true;
-
-      return client.set(gameId, JSON.stringify(newState));
-    }
-
-    newState.playerTurn = newState.playerTurn === "X" ? "O" : "X";
-
-    return client.set(gameId, JSON.stringify(newState));
-  } catch (err) {
-    console.log(err);
+  if (!data) {
+    console.log("gameState not found in Redis");
+    return false;
   }
+
+  const gameState = JSON.parse(data);
+
+  const caseOne =
+    gameState.board[0][0] === gameState.playerTurn &&
+    gameState.board[0][1] === gameState.playerTurn &&
+    gameState.board[0][2] === gameState.playerTurn;
+  const caseTwo =
+    gameState.board[1][0] === gameState.playerTurn &&
+    gameState.board[1][1] === gameState.playerTurn &&
+    gameState.board[1][2] === gameState.playerTurn;
+  const caseThree =
+    gameState.board[2][0] === gameState.playerTurn &&
+    gameState.board[2][1] === gameState.playerTurn &&
+    gameState.board[2][2] === gameState.playerTurn;
+  const caseFour =
+    gameState.board[0][0] === gameState.playerTurn &&
+    gameState.board[1][0] === gameState.playerTurn &&
+    gameState.board[2][0] === gameState.playerTurn;
+  const caseFive =
+    gameState.board[0][1] === gameState.playerTurn &&
+    gameState.board[1][1] === gameState.playerTurn &&
+    gameState.board[2][1] === gameState.playerTurn;
+  const caseSix =
+    gameState.board[0][2] === gameState.playerTurn &&
+    gameState.board[1][2] === gameState.playerTurn &&
+    gameState.board[2][2] === gameState.playerTurn;
+  const caseSeven =
+    gameState.board[0][2] === gameState.playerTurn &&
+    gameState.board[1][1] === gameState.playerTurn &&
+    gameState.board[2][0] === gameState.playerTurn;
+  const caseEight =
+    gameState.board[0][0] === gameState.playerTurn &&
+    gameState.board[1][1] === gameState.playerTurn &&
+    gameState.board[2][2] === gameState.playerTurn;
+
+  if (
+    caseOne ||
+    caseTwo ||
+    caseThree ||
+    caseFour ||
+    caseFive ||
+    caseSix ||
+    caseSeven ||
+    caseEight
+  ) {
+    if (gameState.playerTurn === "X") {
+      gameState.message = "X-WINS";
+    } else {
+      gameState.message = "O-WINS";
+    }
+
+    gameState.isGameOver = true;
+
+    return client.set(gameId, JSON.stringify(gameState));
+  }
+
+  let isDraw = gameState.board
+    .flat()
+    .every((sign) => sign === "X" || sign === "O");
+
+  if (isDraw) {
+    gameState.message = "DRAW";
+    gameState.isGameOver = true;
+
+    return client.set(gameId, JSON.stringify(gameState));
+  }
+
+  gameState.playerTurn = gameState.playerTurn === "X" ? "O" : "X";
+
+  return client.set(gameId, JSON.stringify(gameState));
 };
 
-const playerMove = async (row: number, col: number, gameId: string) => {
-  try {
-    const result = await new Promise<string | null>((resolve, reject) => {
-      client.get(gameId, (err, result: any) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result);
-      });
-    });
+const playerMove = async (
+  row: number,
+  col: number,
+  gameId: string,
+  playerId: number
+) => {
+  const data = await client.get(gameId);
 
-    if (!result) {
-      console.log("gameState not found");
-      return;
-    }
-
-    const newState = JSON.parse(result);
-
-    newState.board[row][col] = newState.playerTurn;
-
-    await new Promise<void>((resolve, reject) => {
-      client.set(gameId, JSON.stringify(newState), (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve();
-      });
-    });
-  } catch (error) {
-    console.log(error);
+  if (!data) {
+    console.log("gameState not found on Redis");
+    return;
   }
+
+  const gameState: Game = JSON.parse(data);
+
+  if (gameState.isGameOver === true) {
+    return false;
+  }
+
+  if (gameState.players.X !== playerId && gameState.playerTurn === "X")
+    return false;
+
+  if (gameState.players.O !== playerId && gameState.playerTurn === "O")
+    return false;
+
+  if (gameState.board[row][col] != "") {
+    return false;
+  }
+
+  gameState.board[row][col] = gameState.playerTurn;
+
+  await client.set(gameId, JSON.stringify(gameState));
+
+  return true;
 };
 
 const createNewGame = (senderId: number, receiverId: number): Game => ({
@@ -309,7 +298,12 @@ export default function setupSocket() {
     });
 
     socket.on("playerMove", async (data: PlayerMove) => {
-      await playerMove(data.row, data.col, data.gameId);
+      const playerId: number | undefined = socket.userId;
+
+      if (!playerId) return;
+
+      if (!(await playerMove(data.row, data.col, data.gameId, playerId)))
+        return;
 
       await checkGameStatus(data.gameId);
 
