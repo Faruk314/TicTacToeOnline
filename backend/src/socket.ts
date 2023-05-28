@@ -111,10 +111,10 @@ const playerMove = async (
     return false;
   }
 
-  if (gameState.players.X !== playerId && gameState.playerTurn === "X")
+  if (gameState.players.X.userId !== playerId && gameState.playerTurn === "X")
     return false;
 
-  if (gameState.players.O !== playerId && gameState.playerTurn === "O")
+  if (gameState.players.O.userId !== playerId && gameState.playerTurn === "O")
     return false;
 
   if (gameState.board[row][col] != "") {
@@ -137,7 +137,10 @@ const createNewGame = (senderId: number, receiverId: number): Game => ({
   playerTurn: "X",
   isGameOver: false,
   message: "",
-  players: { X: senderId, O: receiverId },
+  players: {
+    X: { userId: senderId, userName: "", image: "" },
+    O: { userId: receiverId, userName: "", image: "" },
+  },
 });
 
 interface CustomSocket extends Socket {
@@ -327,8 +330,8 @@ export default function setupSocket() {
         console.log(gameState);
         // ...
 
-        const playerXSocketId = getUser(gameState.players.X);
-        const playerOSocketId = getUser(gameState.players.O);
+        const playerXSocketId = getUser(gameState.players.X.userId);
+        const playerOSocketId = getUser(gameState.players.O.userId);
 
         if (!playerXSocketId || !playerOSocketId) {
           console.log("PlayerX or playerO socketId not found");

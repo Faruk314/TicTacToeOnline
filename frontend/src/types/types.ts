@@ -1,7 +1,7 @@
 export interface User {
   userId: number;
   userName: string;
-  email: string;
+  email?: string;
   image: string | null;
 }
 
@@ -23,8 +23,8 @@ export interface Message {
 }
 
 interface Players {
-  X: number;
-  O: number;
+  X: User;
+  O: User;
 }
 
 export interface Game {

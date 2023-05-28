@@ -28,7 +28,7 @@ const Board = ({ socket }: Props) => {
 
       if (
         gameState.playerTurn === "X" &&
-        gameState.players.X === loggedUserInfo?.userId
+        gameState.players.X.userId === loggedUserInfo?.userId
       ) {
         dispatch(setPlayerTurn("X"));
         setPlayerOnMoveId(loggedUserInfo.userId);
@@ -36,7 +36,7 @@ const Board = ({ socket }: Props) => {
 
       if (
         gameState.playerTurn === "O" &&
-        gameState.players.O === loggedUserInfo?.userId
+        gameState.players.O.userId === loggedUserInfo?.userId
       ) {
         dispatch(setPlayerTurn("O"));
         setPlayerOnMoveId(loggedUserInfo.userId);
