@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import http from "http";
 import jwt from "jsonwebtoken";
 import query from "./db";
-import { Request } from "./types/custom";
+import { PlayerMove, Request } from "./types/custom";
 import { v4 as uuidv4 } from "uuid";
 import { Game } from "./types/custom";
 import { Redis } from "ioredis";
@@ -12,14 +12,24 @@ const client = new Redis({
   port: 6379,
 });
 
-const checkGameStatus = (gameId: string) => {
-  client.get(gameId, (err, result) => {
-    if (err) {
-      console.log(err);
+const checkGameStatus = async (gameId: string) => {
+  try {
+    const result = await new Promise<string | null>((resolve, reject) => {
+      client.get(gameId, (err, result: any) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(result);
+      });
+    });
+
+    if (!result) {
+      console.log("gameState not found");
       return;
     }
 
-    const newState = result ? JSON.parse(result) : null;
+    const newState = JSON.parse(result);
 
     const caseOne =
       newState.board[0][0] === newState.playerTurn &&
@@ -89,26 +99,44 @@ const checkGameStatus = (gameId: string) => {
     newState.playerTurn = newState.playerTurn === "X" ? "O" : "X";
 
     return client.set(gameId, JSON.stringify(newState));
-  });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-const playerMove = (row: number, col: number, gameId: string) => {
-  client.get(gameId, (err, result) => {
-    if (err) {
-      console.log(err);
+const playerMove = async (row: number, col: number, gameId: string) => {
+  try {
+    const result = await new Promise<string | null>((resolve, reject) => {
+      client.get(gameId, (err, result: any) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(result);
+      });
+    });
+
+    if (!result) {
+      console.log("gameState not found");
       return;
     }
 
-    const newState = result ? JSON.parse(result) : null;
+    const newState = JSON.parse(result);
 
     newState.board[row][col] = newState.playerTurn;
 
-    client.set(gameId, newState);
-  });
-  // let newBoard = [...board];
-  // newBoard[row][col] = playerTurn;
-  // setBoard(newBoard);
-  // checkGameStatus();
+    await new Promise<void>((resolve, reject) => {
+      client.set(gameId, JSON.stringify(newState), (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const createNewGame = (senderId: number, receiverId: number): Game => ({
@@ -280,14 +308,45 @@ export default function setupSocket() {
       });
     });
 
-    socket.on(
-      "playerMove",
-      async (row: number, col: number, gameId: string) => {
-        playerMove(row, col, gameId);
+    socket.on("playerMove", async (data: PlayerMove) => {
+      await playerMove(data.row, data.col, data.gameId);
 
-        checkGameStatus(gameId);
+      await checkGameStatus(data.gameId);
+
+      try {
+        let gameState: Game = await new Promise((resolve, reject) => {
+          client.get(data.gameId, (err, result) => {
+            if (err) {
+              console.log(err);
+              reject(err);
+              return;
+            }
+            resolve(result ? JSON.parse(result) : null);
+          });
+        });
+
+        if (!gameState) {
+          console.log("gameState not found");
+          return;
+        }
+
+        console.log(gameState);
+        // ...
+
+        const playerXSocketId = getUser(gameState.players.X);
+        const playerOSocketId = getUser(gameState.players.O);
+
+        if (!playerXSocketId || !playerOSocketId) {
+          console.log("PlayerX or playerO socketId not found");
+          return;
+        }
+
+        io.to(playerXSocketId).emit("gameStateResponse", gameState);
+        io.to(playerOSocketId).emit("gameStateResponse", gameState);
+      } catch (error) {
+        console.log(error);
       }
-    );
+    });
 
     socket.on(
       "sendMessage",

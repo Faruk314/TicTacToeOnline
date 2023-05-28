@@ -21,3 +21,16 @@ export interface Message {
   senderName: string;
   message: string;
 }
+
+interface Players {
+  X: number;
+  O: number;
+}
+
+export interface Game {
+  board: string[][];
+  playerTurn: string;
+  isGameOver: boolean;
+  message: string;
+  players: Players;
+}

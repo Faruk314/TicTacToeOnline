@@ -10,9 +10,21 @@ export interface Request {
   receiverId: number;
 }
 
+export interface PlayerMove {
+  row: number;
+  col: number;
+  gameId: string;
+}
+
+interface Players {
+  X: number;
+  O: number;
+}
+
 export interface Game {
   board: string[][];
   playerTurn: string;
   isGameOver: boolean;
   message: string;
+  players: Players;
 }

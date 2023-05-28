@@ -13,7 +13,7 @@ const initialState: InitialState = {
   gameInviteOpen: false,
   otherPlayerInfo: null,
   invitePendingModalOpen: false,
-  roomId: null,
+  roomId: JSON.parse(localStorage.getItem("gameId") || "null"),
   messages: [],
 };
 
@@ -37,6 +37,7 @@ const gameSlice = createSlice({
     },
     saveGameRoom(state, action: PayloadAction<string>) {
       state.roomId = action.payload;
+      localStorage.setItem("gameId", JSON.stringify(action.payload));
     },
     saveMessage(state, action: PayloadAction<Message>) {
       state.messages = [...state.messages, action.payload];

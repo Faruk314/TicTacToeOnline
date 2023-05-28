@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
+import { Game } from "../types/types";
 
 interface Props {
   socket: any;
@@ -16,6 +17,38 @@ const Board = ({ socket }: Props) => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [message, setMessage] = useState("");
   const dispatch = useAppDispatch();
+  const gameId = useAppSelector((state) => state.game.roomId);
+  const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
+  const [playerOnMoveId, setPlayerOnMoveId] = useState<number | null>(null);
+
+  useEffect(() => {
+    socket?.emit("requestGameState", { gameId });
+
+    socket?.on("gameStateResponse", (gameState: Game) => {
+      console.log(gameState);
+      setBoard(gameState.board);
+
+      if (
+        gameState.playerTurn === "X" &&
+        gameState.players.X === loggedUserInfo?.userId
+      ) {
+        setPlayerTurn("X");
+        setPlayerOnMoveId(loggedUserInfo.userId);
+      }
+
+      if (
+        gameState.playerTurn === "O" &&
+        gameState.players.O === loggedUserInfo?.userId
+      ) {
+        setPlayerTurn("O");
+        setPlayerOnMoveId(loggedUserInfo.userId);
+      }
+    });
+
+    return () => {
+      socket?.off("gameStateResponse");
+    };
+  }, [socket, gameId, loggedUserInfo?.userId, playerOnMoveId]);
 
   // const checkGameStatus = (playerTurn: string) => {
   //   const caseOne =
@@ -84,7 +117,13 @@ const Board = ({ socket }: Props) => {
   const playerMove = (row: number, col: number) => {
     if (board[row][col] !== "") return;
 
+    if (playerOnMoveId !== loggedUserInfo?.userId) return;
+
     dispatch(playClickSound("/sounds/boardClick.wav"));
+
+    socket.emit("playerMove", { row, col, gameId });
+
+    setPlayerOnMoveId(null);
 
     // let newBoard = [...board];
 
@@ -94,24 +133,6 @@ const Board = ({ socket }: Props) => {
 
     // checkGameStatus();
   };
-
-  // useEffect(() => {
-  //   const createBoard = () => {
-  //     let board = [];
-
-  //     for (let row = 0; row < 3; row++) {
-  //       let row = [];
-  //       for (let col = 0; col < 3; col++) {
-  //         row.push("");
-  //       }
-  //       board.push(row);
-  //     }
-
-  //     setBoard(board);
-  //   };
-
-  //   createBoard();
-  // }, []);
 
   return (
     <div className="flex flex-col items-center justify-center">
