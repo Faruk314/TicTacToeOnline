@@ -7,14 +7,20 @@ interface InitialState {
   invitePendingModalOpen: boolean;
   roomId: string | null;
   messages: Message[];
+  board: string[][];
+  playerTurn: string | null;
+  isGameOver: boolean;
 }
 
 const initialState: InitialState = {
+  board: [],
   gameInviteOpen: false,
   otherPlayerInfo: null,
   invitePendingModalOpen: false,
   roomId: JSON.parse(localStorage.getItem("gameId") || "null"),
   messages: [],
+  playerTurn: null,
+  isGameOver: false,
 };
 
 const gameSlice = createSlice({
@@ -42,6 +48,15 @@ const gameSlice = createSlice({
     saveMessage(state, action: PayloadAction<Message>) {
       state.messages = [...state.messages, action.payload];
     },
+    setBoard(state, action: PayloadAction<string[][]>) {
+      state.board = action.payload;
+    },
+    setPlayerTurn(state, action: PayloadAction<string>) {
+      state.playerTurn = action.payload;
+    },
+    setGameOver(state, action: PayloadAction<boolean>) {
+      state.isGameOver = action.payload;
+    },
   },
 });
 
@@ -52,6 +67,9 @@ export const {
   closeInvitePendingModal,
   saveGameRoom,
   saveMessage,
+  setBoard,
+  setPlayerTurn,
+  setGameOver,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

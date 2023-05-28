@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { setBoard, setPlayerTurn } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 import { Game } from "../types/types";
@@ -8,31 +9,28 @@ interface Props {
 }
 
 const Board = ({ socket }: Props) => {
-  const [board, setBoard] = useState<string[][]>([
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ]);
-  const [playerTurn, setPlayerTurn] = useState<string | null>(null);
-  const [isGameOver, setIsGameOver] = useState(false);
   const [message, setMessage] = useState("");
   const dispatch = useAppDispatch();
   const gameId = useAppSelector((state) => state.game.roomId);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const [playerOnMoveId, setPlayerOnMoveId] = useState<number | null>(null);
+  const isGameOver = useAppSelector((state) => state.game.isGameOver);
+  const board = useAppSelector((state) => state.game.board);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     socket?.emit("requestGameState", { gameId });
 
     socket?.on("gameStateResponse", (gameState: Game) => {
       console.log(gameState);
-      setBoard(gameState.board);
+      dispatch(setBoard(gameState.board));
 
       if (
         gameState.playerTurn === "X" &&
         gameState.players.X === loggedUserInfo?.userId
       ) {
-        setPlayerTurn("X");
+        dispatch(setPlayerTurn("X"));
         setPlayerOnMoveId(loggedUserInfo.userId);
       }
 
@@ -40,7 +38,7 @@ const Board = ({ socket }: Props) => {
         gameState.playerTurn === "O" &&
         gameState.players.O === loggedUserInfo?.userId
       ) {
-        setPlayerTurn("O");
+        dispatch(setPlayerTurn("O"));
         setPlayerOnMoveId(loggedUserInfo.userId);
       }
     });
@@ -48,7 +46,7 @@ const Board = ({ socket }: Props) => {
     return () => {
       socket?.off("gameStateResponse");
     };
-  }, [socket, gameId, loggedUserInfo?.userId, playerOnMoveId]);
+  }, [socket, gameId, loggedUserInfo?.userId, dispatch]);
 
   // const checkGameStatus = (playerTurn: string) => {
   //   const caseOne =
@@ -122,8 +120,6 @@ const Board = ({ socket }: Props) => {
     dispatch(playClickSound("/sounds/boardClick.wav"));
 
     socket.emit("playerMove", { row, col, gameId });
-
-    setPlayerOnMoveId(null);
 
     // let newBoard = [...board];
 
