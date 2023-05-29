@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import http from "http";
 import jwt from "jsonwebtoken";
 import query from "./db";
-import { PlayerMove, Request } from "./types/custom";
+import { PlayerMove, Request, User } from "./types/custom";
 import { v4 as uuidv4 } from "uuid";
 import { Game } from "./types/custom";
 import { Redis } from "ioredis";
@@ -128,7 +128,7 @@ const playerMove = async (
   return true;
 };
 
-const createNewGame = (senderId: number, receiverId: number): Game => ({
+const createNewGame = (senderInfo: User, receiverInfo: User): Game => ({
   board: [
     ["", "", ""],
     ["", "", ""],
@@ -138,8 +138,16 @@ const createNewGame = (senderId: number, receiverId: number): Game => ({
   isGameOver: false,
   message: "",
   players: {
-    X: { userId: senderId, userName: "", image: "" },
-    O: { userId: receiverId, userName: "", image: "" },
+    X: {
+      userId: senderInfo.userId,
+      userName: senderInfo.userName,
+      image: senderInfo.image,
+    },
+    O: {
+      userId: receiverInfo.userId,
+      userName: receiverInfo.userName,
+      image: receiverInfo.image,
+    },
   },
 });
 
@@ -270,7 +278,19 @@ export default function setupSocket() {
         senderSocket.join(gameRoomId);
         receiverSocket.join(gameRoomId);
 
-        const gameState: Game = createNewGame(senderId, receiverId);
+        let q =
+          "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
+
+        let senderInfo: any = await query(q, [senderId]);
+
+        q =
+          "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
+
+        let receiverInfo: any = await query(q, [receiverId]);
+
+        const gameState: Game = createNewGame(senderInfo[0], receiverInfo[0]);
+
+        console.log(gameState);
 
         client.set(gameRoomId, JSON.stringify(gameState));
 

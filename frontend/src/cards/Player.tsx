@@ -1,4 +1,5 @@
 import React from "react";
+import { useAppSelector } from "../redux/hooks";
 import { User } from "../types/types";
 
 interface Props {
@@ -6,6 +7,8 @@ interface Props {
 }
 
 const Player = ({ playerInfo }: Props) => {
+  const simbols = useAppSelector((state) => state.game.simbols);
+
   return (
     <div className="flex flex-col items-center space-y-2">
       <div className="relative">
@@ -15,7 +18,7 @@ const Player = ({ playerInfo }: Props) => {
         />
 
         <div className="flex justify-center items-center absolute top-0 left-[-0.3rem   ] bg-black text-white font-bold rounded-full w-6 h-6">
-          X
+          {playerInfo?.userId === simbols?.X.userId ? "X" : "O"}
         </div>
       </div>
 

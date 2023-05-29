@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { setBoard, setPlayerTurn } from "../redux/GameSlice";
+import {
+  setBoard,
+  setOtherPlayerInfo,
+  setPlayerTurn,
+  setSimbols,
+} from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 import { Game } from "../types/types";
@@ -25,6 +30,20 @@ const Board = ({ socket }: Props) => {
     socket?.on("gameStateResponse", (gameState: Game) => {
       console.log(gameState);
       dispatch(setBoard(gameState.board));
+      dispatch(
+        setSimbols({
+          X: { userId: gameState.players.X.userId },
+          O: { userId: gameState.players.O.userId },
+        })
+      );
+
+      if (gameState.players.X.userId === loggedUserInfo?.userId) {
+        dispatch(setOtherPlayerInfo(gameState.players.O));
+      }
+
+      if (gameState.players.O.userId === loggedUserInfo?.userId) {
+        dispatch(setOtherPlayerInfo(gameState.players.X));
+      }
 
       if (
         gameState.playerTurn === "X" &&

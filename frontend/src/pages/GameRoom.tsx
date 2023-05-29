@@ -4,28 +4,19 @@ import Board from "../components/Board";
 import Navbar from "../components/Navbar";
 import Chat from "../components/Chat";
 import SoundPlayer from "../components/SoundPlayer";
-import { Message } from "../types/types";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { saveMessage } from "../redux/GameSlice";
+import { useAppSelector } from "../redux/hooks";
 
 interface Props {
   socket: any;
 }
 
 const GameRoom = ({ socket }: Props) => {
-  const dispatch = useAppDispatch();
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const otherPlayerInfo = useAppSelector((state) => state.game.otherPlayerInfo);
 
-  useEffect(() => {
-    socket.on("receiveMessage", (message: Message) => {
-      dispatch(saveMessage(message));
-    });
-
-    return () => {
-      socket.off("receiveMessage");
-    };
-  }, [socket, dispatch]);
+  if (!socket) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <section className="relative">

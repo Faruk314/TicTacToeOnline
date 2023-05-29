@@ -10,6 +10,7 @@ interface InitialState {
   board: string[][];
   playerTurn: string | null;
   isGameOver: boolean;
+  simbols: { X: { userId: number }; O: { userId: number } } | null;
 }
 
 const initialState: InitialState = {
@@ -21,6 +22,7 @@ const initialState: InitialState = {
   messages: [],
   playerTurn: null,
   isGameOver: false,
+  simbols: null,
 };
 
 const gameSlice = createSlice({
@@ -57,6 +59,15 @@ const gameSlice = createSlice({
     setGameOver(state, action: PayloadAction<boolean>) {
       state.isGameOver = action.payload;
     },
+    setOtherPlayerInfo(state, action: PayloadAction<User>) {
+      state.otherPlayerInfo = action.payload;
+    },
+    setSimbols(
+      state,
+      action: PayloadAction<{ X: { userId: number }; O: { userId: number } }>
+    ) {
+      state.simbols = action.payload;
+    },
   },
 });
 
@@ -70,6 +81,8 @@ export const {
   setBoard,
   setPlayerTurn,
   setGameOver,
+  setOtherPlayerInfo,
+  setSimbols,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

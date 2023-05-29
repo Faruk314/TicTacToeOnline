@@ -1,16 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Message from "../cards/Message";
-import { useAppSelector } from "../redux/hooks";
+import { saveMessage } from "../redux/GameSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { Message as Msg } from "../types/types";
 
 interface Props {
   socket: any;
 }
 
 const Chat = ({ socket }: Props) => {
+  const dispatch = useAppDispatch();
   const roomId = useAppSelector((state) => state.game.roomId);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const [message, setMessage] = useState("");
   const messages = useAppSelector((state) => state.game.messages);
+
+  useEffect(() => {
+    socket.on("receiveMessage", (message: Msg) => {
+      dispatch(saveMessage(message));
+    });
+
+    return () => {
+      socket.off("receiveMessage");
+    };
+  }, [socket, dispatch]);
 
   return (
     <div className="flex flex-col fixed border-2 border-black bottom-0 right-0 h-[20rem] w-full md:w-[20rem]">
