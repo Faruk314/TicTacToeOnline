@@ -207,6 +207,21 @@ export default function setupSocket() {
     // Handle socket events
     console.log("New socket connection:", socket.userId);
 
+    socket.on("reconnectToRoom", (gameRoomId: string) => {
+      if (gameRoomId && socket.userId) {
+        const userSocketId = getUser(socket.userId);
+
+        if (userSocketId) {
+          const userSocket: Socket | undefined =
+            io.sockets.sockets.get(userSocketId);
+
+          if (userSocket) {
+            userSocket.join(gameRoomId);
+          }
+        }
+      }
+    });
+
     if (socket.userId) {
       addUser(socket.userId, socket.id);
     }
@@ -348,7 +363,6 @@ export default function setupSocket() {
           return;
         }
 
-        console.log(gameState);
         // ...
 
         const playerXSocketId = getUser(gameState.players.X.userId);

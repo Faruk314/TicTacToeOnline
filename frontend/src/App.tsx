@@ -23,6 +23,15 @@ function App() {
     (state) => state.game.invitePendingModalOpen
   );
   const socket = useSocket();
+  const gameRoomId = useAppSelector((state) => state.game.roomId);
+
+  useEffect(() => {
+    socket?.on("connect", () => {
+      if (gameRoomId) {
+        socket.emit("reconnectToRoom", gameRoomId);
+      }
+    });
+  }, [socket, gameRoomId]);
 
   useEffect(() => {
     socket?.on("getFriendRequest", (request: UserRequest) => {

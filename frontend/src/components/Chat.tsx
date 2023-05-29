@@ -9,11 +9,11 @@ interface Props {
 }
 
 const Chat = ({ socket }: Props) => {
-  const dispatch = useAppDispatch();
   const roomId = useAppSelector((state) => state.game.roomId);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const [message, setMessage] = useState("");
   const messages = useAppSelector((state) => state.game.messages);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     socket.on("receiveMessage", (message: Msg) => {

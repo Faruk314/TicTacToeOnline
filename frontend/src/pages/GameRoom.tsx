@@ -4,7 +4,9 @@ import Board from "../components/Board";
 import Navbar from "../components/Navbar";
 import Chat from "../components/Chat";
 import SoundPlayer from "../components/SoundPlayer";
-import { useAppSelector } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { Message } from "../types/types";
+import { saveMessage } from "../redux/GameSlice";
 
 interface Props {
   socket: any;
@@ -13,6 +15,7 @@ interface Props {
 const GameRoom = ({ socket }: Props) => {
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const otherPlayerInfo = useAppSelector((state) => state.game.otherPlayerInfo);
+  const dispatch = useAppDispatch();
 
   if (!socket) {
     return <div>Loading...</div>;
