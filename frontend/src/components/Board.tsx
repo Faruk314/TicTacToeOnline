@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  retrieveMessages,
   setBoard,
   setOtherPlayerInfo,
   setPlayerTurn,
@@ -30,6 +31,9 @@ const Board = ({ socket }: Props) => {
     socket?.on("gameStateResponse", (gameState: Game) => {
       console.log(gameState);
       dispatch(setBoard(gameState.board));
+
+      dispatch(retrieveMessages(gameState.messages));
+
       dispatch(
         setSimbols({
           X: { userId: gameState.players.X.userId },

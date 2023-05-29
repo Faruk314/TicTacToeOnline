@@ -68,6 +68,9 @@ const gameSlice = createSlice({
     ) {
       state.simbols = action.payload;
     },
+    retrieveMessages(state, action: PayloadAction<Message[]>) {
+      state.messages = action.payload;
+    },
   },
 });
 
@@ -83,6 +86,7 @@ export const {
   setGameOver,
   setOtherPlayerInfo,
   setSimbols,
+  retrieveMessages,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

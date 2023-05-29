@@ -33,4 +33,5 @@ export interface Game {
   isGameOver: boolean;
   message: string;
   players: Players;
+  messages: Message[];
 }

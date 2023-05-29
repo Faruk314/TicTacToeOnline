@@ -149,6 +149,7 @@ const createNewGame = (senderInfo: User, receiverInfo: User): Game => ({
       image: receiverInfo.image,
     },
   },
+  messages: [],
 });
 
 interface CustomSocket extends Socket {
@@ -367,7 +368,7 @@ export default function setupSocket() {
 
     socket.on(
       "sendMessage",
-      ({
+      async ({
         message,
         roomId,
         senderName,
@@ -376,11 +377,26 @@ export default function setupSocket() {
         roomId: string;
         senderName: string;
       }) => {
-        io.to(roomId).emit("receiveMessage", {
+        const msg = {
           id: uuidv4(),
           message,
           senderName,
-        });
+        };
+
+        io.to(roomId).emit("receiveMessage", msg);
+
+        const data = await client.get(roomId);
+
+        if (!data) {
+          console.log("Error retrieving game state");
+          return;
+        }
+
+        const gameState: Game = JSON.parse(data);
+
+        gameState.messages.push(msg);
+
+        await client.set(roomId, JSON.stringify(gameState));
       }
     );
   });

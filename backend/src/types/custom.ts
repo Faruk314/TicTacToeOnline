@@ -21,10 +21,17 @@ interface Players {
   O: User;
 }
 
+export interface Message {
+  id: string;
+  senderName: string;
+  message: string;
+}
+
 export interface Game {
   board: string[][];
   playerTurn: string;
   isGameOver: boolean;
   message: string;
   players: Players;
+  messages: Message[];
 }
