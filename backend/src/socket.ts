@@ -65,12 +65,7 @@ const checkGameStatus = async (gameId: string) => {
     caseSeven ||
     caseEight
   ) {
-    if (gameState.playerTurn === "X") {
-      gameState.message = "X-WINS";
-    } else {
-      gameState.message = "O-WINS";
-    }
-
+    gameState.message = "WIN";
     gameState.isRoundOver = true;
 
     return client.set(gameId, JSON.stringify(gameState));
@@ -431,17 +426,29 @@ export default function setupSocket() {
         ["", "", ""],
       ];
 
-      if (gameState.isRoundOver) {
+      if (gameState.isRoundOver && gameState.message === "WIN") {
         gameState.totalRounds -= 1;
       }
 
-      if (gameState.isRoundOver && gameState.playerTurn === "X") {
+      if (
+        gameState.isRoundOver &&
+        gameState.playerTurn === "X" &&
+        gameState.message === "WIN"
+      ) {
         console.log("uslo u score dio");
         gameState.players.X.score += 1;
       }
 
-      if (gameState.isRoundOver && gameState.playerTurn === "O") {
+      if (
+        gameState.isRoundOver &&
+        gameState.playerTurn === "O" &&
+        gameState.message === "WIN"
+      ) {
         gameState.players.O.score += 1;
+      }
+
+      if (gameState.totalRounds === 0) {
+        gameState.isGameOver = true;
       }
 
       gameState.isRoundOver = false;

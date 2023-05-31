@@ -10,7 +10,10 @@ interface InitialState {
   board: string[][];
   playerTurn: string | null;
   isGameOver: boolean;
-  simbols: { X: { userId: number }; O: { userId: number } } | null;
+  playersStats: {
+    X: { userId: number; score: number };
+    O: { userId: number; score: number };
+  } | null;
   isRoundOver: boolean;
 }
 
@@ -23,7 +26,7 @@ const initialState: InitialState = {
   messages: [],
   playerTurn: null,
   isGameOver: false,
-  simbols: null,
+  playersStats: null,
   isRoundOver: false,
 };
 
@@ -67,11 +70,11 @@ const gameSlice = createSlice({
     setPlayerStats(
       state,
       action: PayloadAction<{
-        X: { userId: number; score?: number };
-        O: { userId: number; score?: number };
+        X: { userId: number; score: number };
+        O: { userId: number; score: number };
       }>
     ) {
-      state.simbols = action.payload;
+      state.playersStats = action.payload;
     },
     retrieveMessages(state, action: PayloadAction<Message[]>) {
       state.messages = action.payload;

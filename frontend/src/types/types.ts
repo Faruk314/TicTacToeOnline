@@ -3,7 +3,7 @@ export interface User {
   userName: string;
   email?: string;
   image: string | null;
-  score?: number;
+  score: number;
 }
 
 export interface UserRequest extends User {
@@ -32,7 +32,7 @@ export interface Game {
   board: string[][];
   playerTurn: string;
   isGameOver: boolean;
-  isRoundOver: false;
+  isRoundOver: boolean;
   message: string;
   players: Players;
   messages: Message[];

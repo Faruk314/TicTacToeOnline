@@ -6,6 +6,7 @@ import {
   setPlayerTurn,
   setRoundState,
   setPlayerStats,
+  setGameOver,
 } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
@@ -25,11 +26,14 @@ const Board = ({ socket }: Props) => {
   const board = useAppSelector((state) => state.game.board);
   const isRoundOver = useAppSelector((state) => state.game.isRoundOver);
 
+  console.log(isRoundOver);
+
   const handleGameStateResponse = useCallback(
     (gameState: Game) => {
       console.log(gameState);
 
       dispatch(setRoundState(gameState.isRoundOver));
+      dispatch(setGameOver(gameState.isGameOver));
 
       if (gameState.isRoundOver) {
         dispatch(setRoundState(gameState.isRoundOver));
@@ -82,15 +86,13 @@ const Board = ({ socket }: Props) => {
 
   useEffect(() => {
     socket?.emit("requestGameState", { gameId });
-  }, [socket, gameId]);
 
-  useEffect(() => {
     socket?.on("gameStateResponse", handleGameStateResponse);
 
     return () => {
       socket?.off("gameStateResponse", handleGameStateResponse);
     };
-  }, [socket]);
+  }, [socket, gameId]);
 
   // const checkGameStatus = (playerTurn: string) => {
   //   const caseOne =
@@ -184,7 +186,7 @@ const Board = ({ socket }: Props) => {
           <div key={rowIndex} className="flex">
             {row.map((col, colIndex) => (
               <div
-                onClick={() => playerMove(rowIndex, colIndex)}
+                onClick={() => !isGameOver && playerMove(rowIndex, colIndex)}
                 key={colIndex}
                 className="flex items-center justify-center w-[6rem] h-[6rem] rounded-md hover:cursor-pointer"
               >
