@@ -15,6 +15,7 @@ interface InitialState {
     O: { userId: number; score: number };
   } | null;
   isRoundOver: boolean;
+  winner: number | null;
 }
 
 const initialState: InitialState = {
@@ -28,6 +29,7 @@ const initialState: InitialState = {
   isGameOver: false,
   playersStats: null,
   isRoundOver: false,
+  winner: null,
 };
 
 const gameSlice = createSlice({
@@ -82,6 +84,9 @@ const gameSlice = createSlice({
     setRoundState(state, action: PayloadAction<boolean>) {
       state.isRoundOver = action.payload;
     },
+    setWinner(state, action: PayloadAction<number | null>) {
+      state.winner = action.payload;
+    },
   },
 });
 
@@ -99,6 +104,7 @@ export const {
   setPlayerStats,
   retrieveMessages,
   setRoundState,
+  setWinner,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

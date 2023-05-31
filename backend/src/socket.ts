@@ -149,6 +149,7 @@ const createNewGame = (senderInfo: User, receiverInfo: User): Game => ({
   },
   messages: [],
   totalRounds: 5,
+  winner: null,
 });
 
 interface CustomSocket extends Socket {
@@ -415,6 +416,7 @@ export default function setupSocket() {
       const data = await client.get(gameId);
 
       console.log("uslo");
+      console.log("newRoundSocketId", socket.userId);
 
       if (!data) return console.log("Could not retrieve gameState");
 
@@ -449,6 +451,12 @@ export default function setupSocket() {
 
       if (gameState.totalRounds === 0) {
         gameState.isGameOver = true;
+
+        if (gameState.players.X.score > gameState.players.O.score) {
+          gameState.winner = gameState.players.X.userId;
+        } else {
+          gameState.winner = gameState.players.O.userId;
+        }
       }
 
       gameState.isRoundOver = false;

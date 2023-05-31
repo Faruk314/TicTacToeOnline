@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import GameOver from "../modals/GameOver";
 import {
   retrieveMessages,
   setBoard,
@@ -7,6 +8,7 @@ import {
   setRoundState,
   setPlayerStats,
   setGameOver,
+  setWinner,
 } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
@@ -34,6 +36,7 @@ const Board = ({ socket }: Props) => {
 
       dispatch(setRoundState(gameState.isRoundOver));
       dispatch(setGameOver(gameState.isGameOver));
+      dispatch(setWinner(gameState.winner));
 
       if (gameState.isRoundOver) {
         dispatch(setRoundState(gameState.isRoundOver));
@@ -180,7 +183,7 @@ const Board = ({ socket }: Props) => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {message && <p className="mb-10 text-2xl font-bold">{message}</p>}
+      {isGameOver && <GameOver />}
       <div className="board">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="flex">

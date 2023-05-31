@@ -37,4 +37,5 @@ export interface Game {
   players: Players;
   messages: Message[];
   totalRounds: number;
+  winner: number | null;
 }
