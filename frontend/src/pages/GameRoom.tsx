@@ -5,8 +5,6 @@ import Navbar from "../components/Navbar";
 import Chat from "../components/Chat";
 import SoundPlayer from "../components/SoundPlayer";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { Message } from "../types/types";
-import { saveMessage } from "../redux/GameSlice";
 
 interface Props {
   socket: any;

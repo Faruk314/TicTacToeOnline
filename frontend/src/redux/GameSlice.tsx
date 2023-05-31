@@ -11,6 +11,7 @@ interface InitialState {
   playerTurn: string | null;
   isGameOver: boolean;
   simbols: { X: { userId: number }; O: { userId: number } } | null;
+  isRoundOver: boolean;
 }
 
 const initialState: InitialState = {
@@ -23,6 +24,7 @@ const initialState: InitialState = {
   playerTurn: null,
   isGameOver: false,
   simbols: null,
+  isRoundOver: false,
 };
 
 const gameSlice = createSlice({
@@ -62,14 +64,20 @@ const gameSlice = createSlice({
     setOtherPlayerInfo(state, action: PayloadAction<User>) {
       state.otherPlayerInfo = action.payload;
     },
-    setSimbols(
+    setPlayerStats(
       state,
-      action: PayloadAction<{ X: { userId: number }; O: { userId: number } }>
+      action: PayloadAction<{
+        X: { userId: number; score?: number };
+        O: { userId: number; score?: number };
+      }>
     ) {
       state.simbols = action.payload;
     },
     retrieveMessages(state, action: PayloadAction<Message[]>) {
       state.messages = action.payload;
+    },
+    setRoundState(state, action: PayloadAction<boolean>) {
+      state.isRoundOver = action.payload;
     },
   },
 });
@@ -85,8 +93,9 @@ export const {
   setPlayerTurn,
   setGameOver,
   setOtherPlayerInfo,
-  setSimbols,
+  setPlayerStats,
   retrieveMessages,
+  setRoundState,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

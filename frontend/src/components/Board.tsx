@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   retrieveMessages,
   setBoard,
   setOtherPlayerInfo,
   setPlayerTurn,
-  setSimbols,
+  setRoundState,
+  setPlayerStats,
 } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
@@ -22,22 +23,33 @@ const Board = ({ socket }: Props) => {
   const [playerOnMoveId, setPlayerOnMoveId] = useState<number | null>(null);
   const isGameOver = useAppSelector((state) => state.game.isGameOver);
   const board = useAppSelector((state) => state.game.board);
+  const isRoundOver = useAppSelector((state) => state.game.isRoundOver);
 
-  useEffect(() => {}, []);
-
-  useEffect(() => {
-    socket?.emit("requestGameState", { gameId });
-
-    socket?.on("gameStateResponse", (gameState: Game) => {
+  const handleGameStateResponse = useCallback(
+    (gameState: Game) => {
       console.log(gameState);
-      dispatch(setBoard(gameState.board));
 
+      dispatch(setRoundState(gameState.isRoundOver));
+
+      if (gameState.isRoundOver) {
+        dispatch(setRoundState(gameState.isRoundOver));
+        socket.emit("newRound", gameId);
+        return;
+      }
+
+      dispatch(setBoard(gameState.board));
       dispatch(retrieveMessages(gameState.messages));
 
       dispatch(
-        setSimbols({
-          X: { userId: gameState.players.X.userId },
-          O: { userId: gameState.players.O.userId },
+        setPlayerStats({
+          X: {
+            userId: gameState.players.X.userId,
+            score: gameState.players.X.score,
+          },
+          O: {
+            userId: gameState.players.O.userId,
+            score: gameState.players.O.score,
+          },
         })
       );
 
@@ -64,12 +76,21 @@ const Board = ({ socket }: Props) => {
         dispatch(setPlayerTurn("O"));
         setPlayerOnMoveId(loggedUserInfo.userId);
       }
-    });
+    },
+    [dispatch, loggedUserInfo?.userId, gameId, socket]
+  );
+
+  useEffect(() => {
+    socket?.emit("requestGameState", { gameId });
+  }, [socket, gameId]);
+
+  useEffect(() => {
+    socket?.on("gameStateResponse", handleGameStateResponse);
 
     return () => {
-      socket?.off("gameStateResponse");
+      socket?.off("gameStateResponse", handleGameStateResponse);
     };
-  }, [socket, gameId, loggedUserInfo?.userId, dispatch]);
+  }, [socket]);
 
   // const checkGameStatus = (playerTurn: string) => {
   //   const caseOne =
@@ -142,7 +163,9 @@ const Board = ({ socket }: Props) => {
 
     dispatch(playClickSound("/sounds/boardClick.wav"));
 
-    socket.emit("playerMove", { row, col, gameId });
+    if (!isRoundOver) {
+      socket.emit("playerMove", { row, col, gameId });
+    }
 
     // let newBoard = [...board];
 
@@ -161,7 +184,7 @@ const Board = ({ socket }: Props) => {
           <div key={rowIndex} className="flex">
             {row.map((col, colIndex) => (
               <div
-                onClick={() => !isGameOver && playerMove(rowIndex, colIndex)}
+                onClick={() => playerMove(rowIndex, colIndex)}
                 key={colIndex}
                 className="flex items-center justify-center w-[6rem] h-[6rem] rounded-md hover:cursor-pointer"
               >

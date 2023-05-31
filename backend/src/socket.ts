@@ -71,7 +71,7 @@ const checkGameStatus = async (gameId: string) => {
       gameState.message = "O-WINS";
     }
 
-    gameState.isGameOver = true;
+    gameState.isRoundOver = true;
 
     return client.set(gameId, JSON.stringify(gameState));
   }
@@ -82,7 +82,7 @@ const checkGameStatus = async (gameId: string) => {
 
   if (isDraw) {
     gameState.message = "DRAW";
-    gameState.isGameOver = true;
+    gameState.isRoundOver = true;
 
     return client.set(gameId, JSON.stringify(gameState));
   }
@@ -107,7 +107,7 @@ const playerMove = async (
 
   const gameState: Game = JSON.parse(data);
 
-  if (gameState.isGameOver === true) {
+  if (gameState.isGameOver === true || gameState.isRoundOver === true) {
     return false;
   }
 
@@ -135,6 +135,7 @@ const createNewGame = (senderInfo: User, receiverInfo: User): Game => ({
     ["", "", ""],
   ],
   playerTurn: "X",
+  isRoundOver: false,
   isGameOver: false,
   message: "",
   players: {
@@ -142,14 +143,17 @@ const createNewGame = (senderInfo: User, receiverInfo: User): Game => ({
       userId: senderInfo.userId,
       userName: senderInfo.userName,
       image: senderInfo.image,
+      score: 0,
     },
     O: {
       userId: receiverInfo.userId,
       userName: receiverInfo.userName,
       image: receiverInfo.image,
+      score: 0,
     },
   },
   messages: [],
+  totalRounds: 5,
 });
 
 interface CustomSocket extends Socket {
@@ -306,8 +310,6 @@ export default function setupSocket() {
 
         const gameState: Game = createNewGame(senderInfo[0], receiverInfo[0]);
 
-        console.log(gameState);
-
         client.set(gameRoomId, JSON.stringify(gameState));
 
         io.to(receiverSocketId).emit("gameStart", gameRoomId);
@@ -413,6 +415,41 @@ export default function setupSocket() {
         await client.set(roomId, JSON.stringify(gameState));
       }
     );
+
+    socket.on("newRound", async (gameId: string) => {
+      const data = await client.get(gameId);
+
+      console.log("uslo");
+
+      if (!data) return console.log("Could not retrieve gameState");
+
+      let gameState: Game = JSON.parse(data);
+
+      gameState.board = [
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""],
+      ];
+
+      if (gameState.isRoundOver) {
+        gameState.totalRounds -= 1;
+      }
+
+      if (gameState.isRoundOver && gameState.playerTurn === "X") {
+        console.log("uslo u score dio");
+        gameState.players.X.score += 1;
+      }
+
+      if (gameState.isRoundOver && gameState.playerTurn === "O") {
+        gameState.players.O.score += 1;
+      }
+
+      gameState.isRoundOver = false;
+
+      io.to(gameId).emit("gameStateResponse", gameState);
+
+      await client.set(gameId, JSON.stringify(gameState));
+    });
   });
 
   io.listen(4001);
