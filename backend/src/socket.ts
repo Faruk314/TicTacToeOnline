@@ -449,7 +449,11 @@ export default function setupSocket() {
         gameState.players.O.score += 1;
       }
 
-      if (gameState.totalRounds === 0) {
+      if (
+        gameState.totalRounds === 0 ||
+        gameState.players.X.score === 3 ||
+        gameState.players.O.score === 3
+      ) {
         gameState.isGameOver = true;
 
         if (gameState.players.X.score > gameState.players.O.score) {
