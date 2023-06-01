@@ -95,6 +95,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
         )}
 
         {friendRequestStatus?.status === 1 &&
+          friendRequestInfo.id &&
           loggedUserInfo?.userId === friendRequestStatus.receiver && (
             <div className="flex space-x-2">
               <button
@@ -121,10 +122,37 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
           )}
 
         {friendRequestStatus?.status === 1 &&
+          !friendRequestInfo.id &&
+          loggedUserInfo?.userId === friendRequestStatus.receiver && (
+            <div className="flex space-x-2">
+              <span className="p-2 rounded-md">PENDING</span>
+              <button
+                onClick={() =>
+                  socket.emit("sendInvite", {
+                    senderId: loggedUserInfo?.userId,
+                    receiverId: friendRequestInfo.userId,
+                  })
+                }
+                className="p-2 rounded-md hover:bg-gray-100"
+              >
+                INVITE
+              </button>
+            </div>
+          )}
+
+        {friendRequestStatus?.status === 1 &&
           loggedUserInfo?.userId === friendRequestStatus.sender && (
             <div className="flex space-x-2">
-              <button className="p-2 rounded-md hover:bg-gray-100">SENT</button>
-              <button className="p-2 rounded-md hover:bg-gray-100">
+              <span className="p-2 rounded-md">SENT</span>
+              <button
+                onClick={() =>
+                  socket.emit("sendInvite", {
+                    senderId: loggedUserInfo?.userId,
+                    receiverId: friendRequestInfo.userId,
+                  })
+                }
+                className="p-2 rounded-md hover:bg-gray-100"
+              >
                 INVITE
               </button>
             </div>
@@ -146,13 +174,34 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
             >
               UNFRIEND
             </button>
-            <button className="p-2 rounded-md hover:bg-gray-100">INVITE</button>
+            <button
+              onClick={() =>
+                socket.emit("sendInvite", {
+                  senderId: loggedUserInfo?.userId,
+                  receiverId: friendRequestInfo.userId,
+                })
+              }
+              className="p-2 rounded-md hover:bg-gray-100"
+            >
+              INVITE
+            </button>
           </div>
         )}
 
         {friendRequestStatus?.status === 2 && !friendRequestInfo.id && (
-          <div className="flex space-x-2">
-            <button className="p-2 rounded-md hover:bg-gray-100">INVITE</button>
+          <div className="flex items-center space-x-2">
+            <span>FRIENDS</span>
+            <button
+              onClick={() =>
+                socket.emit("sendInvite", {
+                  senderId: loggedUserInfo?.userId,
+                  receiverId: friendRequestInfo.userId,
+                })
+              }
+              className="p-2 rounded-md hover:bg-gray-100"
+            >
+              INVITE
+            </button>
           </div>
         )}
       </div>
