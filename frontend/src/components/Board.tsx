@@ -9,6 +9,7 @@ import {
   setPlayerStats,
   setGameOver,
   setWinner,
+  setTotalRounds,
 } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
@@ -34,6 +35,7 @@ const Board = ({ socket }: Props) => {
     (gameState: Game) => {
       console.log(gameState);
 
+      dispatch(setTotalRounds(gameState.totalRounds));
       dispatch(setRoundState(gameState.isRoundOver));
       dispatch(setGameOver(gameState.isGameOver));
       dispatch(setWinner(gameState.winner));
