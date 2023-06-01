@@ -1,5 +1,6 @@
 import React from "react";
-import { closeGameInviteModal } from "../redux/GameSlice";
+import { openGameInviteModal } from "../redux/GameSlice";
+
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 
@@ -32,7 +33,8 @@ const GameInvite = ({ socket }: Props) => {
           <button
             onClick={() => {
               dispatch(playClickSound("/sounds/click.wav"));
-              dispatch(closeGameInviteModal());
+              socket.emit("cancelInvite");
+              dispatch(openGameInviteModal(false));
             }}
             className="px-2 font-bold bg-white border-2 border-black rounded-full hover:bg-gray-200"
           >

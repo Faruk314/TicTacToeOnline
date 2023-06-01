@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { UserRequest } from "../types/types";
 import axios from "axios";
 import { FriendRequestStatus } from "../types/types";
+import GameInvitePending from "../modals/GameInvitePending";
 
 interface Props {
   friendRequestInfo: UserRequest;
@@ -21,6 +22,9 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const [friendRequestStatus, setFriendRequestStatus] =
     useState<FriendRequestStatus | null>(null);
+  const invitePendingModalOpen = useAppSelector(
+    (state) => state.game.invitePendingModalOpen
+  );
 
   const friendRequestHandler = async () => {
     await dispatch(sendFriendRequest(friendRequestInfo.userId));
@@ -42,6 +46,13 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const inviteHandler = () => {
+    socket.emit("sendInvite", {
+      senderId: loggedUserInfo?.userId,
+      receiverId: friendRequestInfo.userId,
+    });
   };
 
   useEffect(() => {
@@ -81,12 +92,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
             </button>
 
             <button
-              onClick={() =>
-                socket.emit("sendInvite", {
-                  senderId: loggedUserInfo?.userId,
-                  receiverId: friendRequestInfo.userId,
-                })
-              }
+              onClick={() => inviteHandler()}
               className="p-2 rounded-md hover:bg-gray-100"
             >
               INVITE
@@ -127,12 +133,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
             <div className="flex space-x-2">
               <span className="p-2 rounded-md">PENDING</span>
               <button
-                onClick={() =>
-                  socket.emit("sendInvite", {
-                    senderId: loggedUserInfo?.userId,
-                    receiverId: friendRequestInfo.userId,
-                  })
-                }
+                onClick={() => inviteHandler()}
                 className="p-2 rounded-md hover:bg-gray-100"
               >
                 INVITE
@@ -145,12 +146,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
             <div className="flex space-x-2">
               <span className="p-2 rounded-md">SENT</span>
               <button
-                onClick={() =>
-                  socket.emit("sendInvite", {
-                    senderId: loggedUserInfo?.userId,
-                    receiverId: friendRequestInfo.userId,
-                  })
-                }
+                onClick={() => inviteHandler()}
                 className="p-2 rounded-md hover:bg-gray-100"
               >
                 INVITE
@@ -175,12 +171,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
               UNFRIEND
             </button>
             <button
-              onClick={() =>
-                socket.emit("sendInvite", {
-                  senderId: loggedUserInfo?.userId,
-                  receiverId: friendRequestInfo.userId,
-                })
-              }
+              onClick={() => inviteHandler()}
               className="p-2 rounded-md hover:bg-gray-100"
             >
               INVITE
@@ -192,12 +183,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
           <div className="flex items-center space-x-2">
             <span>FRIENDS</span>
             <button
-              onClick={() =>
-                socket.emit("sendInvite", {
-                  senderId: loggedUserInfo?.userId,
-                  receiverId: friendRequestInfo.userId,
-                })
-              }
+              onClick={() => inviteHandler()}
               className="p-2 rounded-md hover:bg-gray-100"
             >
               INVITE
@@ -205,6 +191,12 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
           </div>
         )}
       </div>
+      {invitePendingModalOpen && (
+        <GameInvitePending
+          invitedUserId={friendRequestInfo.userId}
+          socket={socket}
+        />
+      )}
     </div>
   );
 };

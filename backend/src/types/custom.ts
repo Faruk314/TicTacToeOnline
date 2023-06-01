@@ -6,6 +6,11 @@ export interface User {
   score: number;
 }
 
+export interface InviteInfo {
+  senderSocketId: string;
+  receiverSocketId: string;
+}
+
 export interface Request {
   senderId: number;
   receiverId: number;

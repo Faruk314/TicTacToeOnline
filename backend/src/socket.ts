@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import http from "http";
 import jwt from "jsonwebtoken";
 import query from "./db";
-import { PlayerMove, Request, User } from "./types/custom";
+import { InviteInfo, PlayerMove, Request, User } from "./types/custom";
 import { v4 as uuidv4 } from "uuid";
 import { Game } from "./types/custom";
 import { Redis } from "ioredis";
@@ -263,6 +263,14 @@ export default function setupSocket() {
 
       if (!receiverSocketId || !senderSocketId) return;
 
+      const inviteInfo: InviteInfo = {
+        senderSocketId,
+        receiverSocketId,
+      };
+
+      await client.set(senderId.toString(), JSON.stringify(inviteInfo));
+      await client.set(receiverId.toString(), JSON.stringify(inviteInfo));
+
       let q =
         "SELECT u.user_id AS userId, u.user_name AS userName, u.image FROM users u WHERE u.user_id = ?";
 
@@ -311,6 +319,24 @@ export default function setupSocket() {
         io.to(receiverSocketId).emit("gameStart", gameRoomId);
         io.to(senderSocketId).emit("gameStart", gameRoomId);
       }
+    });
+
+    socket.on("cancelInvite", async () => {
+      if (!socket.userId) {
+        console.log("User not authenticated");
+        return;
+      }
+
+      const data = await client.get(socket.userId.toString());
+
+      if (!data) return console.log("Could not retrieve invite data");
+
+      let inviteInfo: InviteInfo = JSON.parse(data);
+
+      console.log("unislo");
+
+      io.to(inviteInfo.senderSocketId).emit("inviteCanceled");
+      io.to(inviteInfo.receiverSocketId).emit("inviteCanceled");
     });
 
     socket.on("requestGameState", async ({ gameId }: { gameId: string }) => {

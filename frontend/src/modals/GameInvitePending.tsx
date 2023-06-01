@@ -3,8 +3,15 @@ import { closeInvitePendingModal } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 
-const GameInvitePending = () => {
+interface Props {
+  invitedUserId: number;
+  socket: any;
+}
+
+const GameInvitePending = ({ invitedUserId, socket }: Props) => {
   const dispatch = useAppDispatch();
+
+  console.log("inviteUserid", invitedUserId);
 
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center text-center bg-[rgb(0,0,0,0.5)]">
@@ -16,6 +23,7 @@ const GameInvitePending = () => {
         <button
           onClick={() => {
             dispatch(playClickSound("/sounds/click.wav"));
+            socket.emit("cancelInvite");
             dispatch(closeInvitePendingModal());
           }}
           className="px-2 font-bold bg-white border-2 border-black rounded-full hover:bg-gray-200"

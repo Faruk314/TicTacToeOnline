@@ -50,16 +50,12 @@ const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    openGameInviteModal(state, action: PayloadAction<User>) {
-      state.gameInviteOpen = true;
-      state.otherPlayerInfo = action.payload;
+    openGameInviteModal(state, action: PayloadAction<boolean>) {
+      state.gameInviteOpen = action.payload;
     },
-    closeGameInviteModal(state) {
-      state.gameInviteOpen = false;
-    },
-    openInvitePendingModal(state, action: PayloadAction<User>) {
-      state.otherPlayerInfo = action.payload;
-      state.invitePendingModalOpen = true;
+
+    openInvitePendingModal(state, action: PayloadAction<boolean>) {
+      state.invitePendingModalOpen = action.payload;
     },
     closeInvitePendingModal(state) {
       state.invitePendingModalOpen = false;
@@ -109,7 +105,7 @@ const gameSlice = createSlice({
 
 export const {
   openGameInviteModal,
-  closeGameInviteModal,
+
   openInvitePendingModal,
   closeInvitePendingModal,
   saveGameRoom,

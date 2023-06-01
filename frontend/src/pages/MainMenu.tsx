@@ -14,8 +14,9 @@ import {
 import { FaUserFriends } from "react-icons/fa";
 import FriendRequests from "../modals/FriendRequests";
 import {
-  closeGameInviteModal,
   closeInvitePendingModal,
+  openGameInviteModal,
+  openInvitePendingModal,
   saveGameRoom,
 } from "../redux/GameSlice";
 import Leaderboard from "../modals/Leaderboard";
@@ -26,7 +27,6 @@ interface Props {
 
 const MainMenu = ({ socket }: Props) => {
   const dispatch = useAppDispatch();
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const navigate = useNavigate();
   const [openMultiplayer, setOpenMultiplayer] = useState(false);
   const [openFriendRequests, setOpenFriendRequests] = useState(false);
@@ -38,10 +38,26 @@ const MainMenu = ({ socket }: Props) => {
     navigate("/");
   };
 
+  useEffect(() => {
+    socket?.on("inviteCanceled", () => {
+      console.log("hehehe");
+      dispatch(openInvitePendingModal(false));
+      dispatch(openGameInviteModal(false));
+    });
+
+    return () => {
+      socket?.off("inviteCanceled");
+    };
+  }, [socket, dispatch]);
+
+  useEffect(() => {
+    socket?.emit("cancelInvite");
+  }, [socket]);
+
   // gameStart
   useEffect(() => {
     socket?.on("gameStart", (gameRoomId: string) => {
-      dispatch(closeGameInviteModal());
+      dispatch(openGameInviteModal(false));
       dispatch(closeInvitePendingModal());
       dispatch(saveGameRoom(gameRoomId));
       navigate(`/room/${gameRoomId}`);
