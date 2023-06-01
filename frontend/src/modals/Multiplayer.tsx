@@ -5,6 +5,7 @@ import InvitePlayer from "../cards/InvitePlayer";
 import { User } from "../types/types";
 import axios from "axios";
 import { getFriends } from "../redux/FriendSlice";
+import FindMatch from "./FindMatch";
 
 interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,6 +22,7 @@ const Multiplayer = ({ setOpen, socket }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const friends = useAppSelector((state) => state.friend.friends);
+  const [openFindMatch, setOpenFindMatch] = useState(false);
 
   const [isOpen, setIsOpen] = useState<ModalState>({
     friends: false,
@@ -84,7 +86,10 @@ const Multiplayer = ({ setOpen, socket }: Props) => {
         </button>
 
         <span
-          onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
+          onClick={() => {
+            dispatch(playClickSound("/sounds/click.wav"));
+            setOpenFindMatch(true);
+          }}
           className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
         >
           FIND MATCH
@@ -152,6 +157,10 @@ const Multiplayer = ({ setOpen, socket }: Props) => {
           </div>
         )}
       </div>
+
+      {openFindMatch && (
+        <FindMatch socket={socket} setOpenFindMatch={setOpenFindMatch} />
+      )}
     </div>
   );
 };

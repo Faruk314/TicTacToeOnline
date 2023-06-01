@@ -182,6 +182,7 @@ export default function setupSocket() {
   });
 
   let users = new Map<number, string>();
+  let usersLookingForMatch: string[] = [];
 
   const addUser = (userId: number, socketId: string) => {
     if (!users.has(userId)) {
@@ -285,7 +286,39 @@ export default function setupSocket() {
       io.to(senderSocketId).emit("gameInvitePending", receiverInfo[0]);
     });
 
+    socket.on("findMatch", () => {
+      if (socket.userId) {
+        if (!usersLookingForMatch.includes(socket.userId.toString())) {
+          usersLookingForMatch.push(socket.userId.toString());
+        }
+      }
+
+      if (usersLookingForMatch.length > 1) {
+        const playerOneId = usersLookingForMatch[0];
+        const playerTwoId = usersLookingForMatch[1];
+
+        usersLookingForMatch = usersLookingForMatch.filter(
+          (playerId) => playerId !== playerOneId && playerId !== playerTwoId
+        );
+
+        console.log(usersLookingForMatch);
+
+        console.log(playerOneId);
+        console.log(playerTwoId);
+
+        const socketId = getUser(parseInt(playerOneId));
+
+        if (!socketId) return;
+
+        io.to(socketId).emit("matchFound", {
+          senderId: parseInt(playerOneId),
+          receiverId: parseInt(playerTwoId),
+        });
+      }
+    });
+
     socket.on("acceptInvite", async ({ senderId, receiverId }: Request) => {
+      console.log("hej");
       const gameRoomId: string = uuidv4();
 
       const senderSocketId = getUser(senderId);
