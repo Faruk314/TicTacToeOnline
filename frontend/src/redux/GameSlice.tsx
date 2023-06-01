@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Message, User } from "../types/types";
+import axios from "axios";
 
 interface InitialState {
   gameInviteOpen: boolean;
@@ -31,6 +32,17 @@ const initialState: InitialState = {
   isRoundOver: false,
   winner: null,
 };
+
+export const updateLeaderboard = createAsyncThunk(
+  "game/updateLeaderboard",
+  async (winnerId: number) => {
+    try {
+      await axios.post(`http://localhost:4000/api/game/updateLeaderboard`);
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+);
 
 const gameSlice = createSlice({
   name: "game",

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router";
+import { updateLeaderboard } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 
@@ -19,9 +20,9 @@ const GameOver = () => {
         <button
           onClick={() => {
             dispatch(playClickSound("/sounds/click.wav"));
-            // if (winnerId === loggedUserInfo?.userId) {
-            // dispatch(updateLeaderboard())
-            // }
+            if (winnerId === loggedUserInfo?.userId) {
+              dispatch(updateLeaderboard(winnerId));
+            }
             navigate("/menu");
           }}
           className="px-2 font-bold bg-white border-2 border-black rounded-full hover:bg-gray-200"

@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth";
 import userRoute from "./routes/user";
 import friendRoute from "./routes/friend";
+import gameRoute from "./routes/game";
 import dotenv from "dotenv";
 import errorHandler from "./utils/errorHandler";
 import cors from "cors";
@@ -30,6 +31,7 @@ app.use(
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/friends", friendRoute);
+app.use("/api/game", gameRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
