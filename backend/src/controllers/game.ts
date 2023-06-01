@@ -29,7 +29,7 @@ export const getLeaderboard = asyncHandler(
   async (req: Request, res: Response) => {
     try {
       let q =
-        "SELECT u.user_id AS userId, u.user_name AS userName, sb.score FROM users u JOIN scoreboard sb ON u.user_id=sb.user_id";
+        "SELECT u.user_id AS userId, u.user_name AS userName, sb.score FROM users u JOIN scoreboard sb ON u.user_id=sb.user_id ORDER BY sb.score DESC";
 
       let data = await query(q, []);
 

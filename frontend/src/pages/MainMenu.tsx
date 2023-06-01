@@ -18,6 +18,7 @@ import {
   closeInvitePendingModal,
   saveGameRoom,
 } from "../redux/GameSlice";
+import Leaderboard from "../modals/Leaderboard";
 
 interface Props {
   socket: any;
@@ -29,6 +30,7 @@ const MainMenu = ({ socket }: Props) => {
   const navigate = useNavigate();
   const [openMultiplayer, setOpenMultiplayer] = useState(false);
   const [openFriendRequests, setOpenFriendRequests] = useState(false);
+  const [openLeaderboard, setOpenLeaderboard] = useState(false);
 
   const handleLogout = async () => {
     dispatch(playClickSound("/sounds/popUp.mp3"));
@@ -97,10 +99,13 @@ const MainMenu = ({ socket }: Props) => {
           </span>
 
           <span
-            onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
+            onClick={() => {
+              dispatch(playClickSound("/sounds/click.wav"));
+              setOpenLeaderboard(true);
+            }}
             className="block py-2 text-xl font-bold cursor-pointer hover:bg-gray-100"
           >
-            SCOREBOARD
+            LEADERBOARD
           </span>
 
           <span
@@ -118,6 +123,9 @@ const MainMenu = ({ socket }: Props) => {
         <Multiplayer setOpen={setOpenMultiplayer} socket={socket} />
       )}
       {openFriendRequests && <FriendRequests socket={socket} />}
+      {openLeaderboard && (
+        <Leaderboard setOpenLeaderboard={setOpenLeaderboard} />
+      )}
     </section>
   );
 };
