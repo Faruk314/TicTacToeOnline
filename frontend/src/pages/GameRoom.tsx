@@ -13,7 +13,7 @@ interface Props {
 const GameRoom = ({ socket }: Props) => {
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const otherPlayerInfo = useAppSelector((state) => state.game.otherPlayerInfo);
-  const dispatch = useAppDispatch();
+  const playerTurn = useAppSelector((state) => state.game.playerTurn);
 
   if (!socket) {
     return <div>Loading...</div>;
@@ -22,6 +22,8 @@ const GameRoom = ({ socket }: Props) => {
   return (
     <section className="relative">
       <Navbar />
+
+      <p className="text-2xl font-bold text-center">{playerTurn} turn</p>
 
       <div className="flex justify-between px-4 py-10">
         <Player playerInfo={loggedUserInfo} />

@@ -32,7 +32,7 @@ const Board = ({ socket }: Props) => {
   const handleGameStateResponse = useCallback(
     (gameState: Game) => {
       console.log(gameState);
-
+      dispatch(setPlayerTurn(gameState.playerTurn));
       dispatch(setTotalRounds(gameState.totalRounds));
       dispatch(setRoundState(gameState.isRoundOver));
       dispatch(setGameOver(gameState.isGameOver));
@@ -72,7 +72,6 @@ const Board = ({ socket }: Props) => {
         gameState.playerTurn === "X" &&
         gameState.players.X.userId === loggedUserInfo?.userId
       ) {
-        dispatch(setPlayerTurn("X"));
         setPlayerOnMoveId(loggedUserInfo.userId);
       }
 
@@ -80,7 +79,6 @@ const Board = ({ socket }: Props) => {
         gameState.playerTurn === "O" &&
         gameState.players.O.userId === loggedUserInfo?.userId
       ) {
-        dispatch(setPlayerTurn("O"));
         setPlayerOnMoveId(loggedUserInfo.userId);
       }
     },
