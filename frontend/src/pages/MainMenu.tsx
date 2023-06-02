@@ -20,6 +20,7 @@ import {
   saveGameRoom,
 } from "../redux/GameSlice";
 import Leaderboard from "../modals/Leaderboard";
+import Difficulty from "../modals/Difficulty";
 
 interface Props {
   socket: any;
@@ -31,6 +32,7 @@ const MainMenu = ({ socket }: Props) => {
   const [openMultiplayer, setOpenMultiplayer] = useState(false);
   const [openFriendRequests, setOpenFriendRequests] = useState(false);
   const [openLeaderboard, setOpenLeaderboard] = useState(false);
+  const [openDifficulty, setOpenDifficulty] = useState(false);
 
   const handleLogout = async () => {
     dispatch(playClickSound("/sounds/popUp.mp3"));
@@ -95,14 +97,16 @@ const MainMenu = ({ socket }: Props) => {
 
       <div className="shadow-xl py-10 w-[18rem] rounded-md">
         <div className="w-full">
-          <Link
-            to="/room"
-            className="flex items-center justify-center py-2 space-x-2 hover:bg-gray-100"
-            onClick={() => dispatch(playClickSound("/sounds/click.wav"))}
+          <span
+            className="flex items-center justify-center py-2 space-x-2 cursor-pointer hover:bg-gray-100"
+            onClick={() => {
+              dispatch(playClickSound("/sounds/click.wav"));
+              setOpenDifficulty(true);
+            }}
           >
             <span className="text-xl font-bold"> PLAY VS</span>
             <RiComputerLine size={20} />
-          </Link>
+          </span>
 
           <span
             onClick={() => {
@@ -142,6 +146,7 @@ const MainMenu = ({ socket }: Props) => {
       {openLeaderboard && (
         <Leaderboard setOpenLeaderboard={setOpenLeaderboard} />
       )}
+      {openDifficulty && <Difficulty setOpenDifficulty={setOpenDifficulty} />}
     </section>
   );
 };

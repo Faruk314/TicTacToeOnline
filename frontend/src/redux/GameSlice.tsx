@@ -19,6 +19,7 @@ interface InitialState {
   winner: number | null;
   totalRounds: number | null;
   gameLeaveOpen: boolean;
+  difficulty: string | null;
 }
 
 const initialState: InitialState = {
@@ -35,6 +36,7 @@ const initialState: InitialState = {
   winner: null,
   totalRounds: null,
   gameLeaveOpen: false,
+  difficulty: null,
 };
 
 export const updateLeaderboard = createAsyncThunk(
@@ -105,12 +107,14 @@ const gameSlice = createSlice({
     setGameLeaveOpen(state, action: PayloadAction<boolean>) {
       state.gameLeaveOpen = action.payload;
     },
+    setDifficulty(state, action: PayloadAction<string>) {
+      state.difficulty = action.payload;
+    },
   },
 });
 
 export const {
   openGameInviteModal,
-
   openInvitePendingModal,
   closeInvitePendingModal,
   saveGameRoom,
@@ -125,6 +129,7 @@ export const {
   setWinner,
   setTotalRounds,
   setGameLeaveOpen,
+  setDifficulty,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

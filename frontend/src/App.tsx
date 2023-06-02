@@ -16,6 +16,7 @@ import {
   openInvitePendingModal,
   setOtherPlayerInfo,
 } from "./redux/GameSlice";
+import VsComputer from "./pages/VsComputer";
 
 axios.defaults.withCredentials = true;
 
@@ -85,6 +86,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/menu" element={<MainMenu socket={socket} />} />
         <Route path="/room/:id" element={<GameRoom socket={socket} />} />
+        <Route path="/vsComputer" element={<VsComputer />} />
       </Routes>
       {gameInviteOpen && <GameInvite socket={socket} />}
     </BrowserRouter>
