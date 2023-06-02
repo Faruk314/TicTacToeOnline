@@ -18,6 +18,7 @@ interface InitialState {
   isRoundOver: boolean;
   winner: number | null;
   totalRounds: number | null;
+  gameLeaveOpen: boolean;
 }
 
 const initialState: InitialState = {
@@ -33,6 +34,7 @@ const initialState: InitialState = {
   isRoundOver: false,
   winner: null,
   totalRounds: null,
+  gameLeaveOpen: false,
 };
 
 export const updateLeaderboard = createAsyncThunk(
@@ -100,6 +102,9 @@ const gameSlice = createSlice({
     setTotalRounds(state, action: PayloadAction<number>) {
       state.totalRounds = action.payload;
     },
+    setGameLeaveOpen(state, action: PayloadAction<boolean>) {
+      state.gameLeaveOpen = action.payload;
+    },
   },
 });
 
@@ -119,6 +124,7 @@ export const {
   setRoundState,
   setWinner,
   setTotalRounds,
+  setGameLeaveOpen,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Player from "../cards/Player";
 import Board from "../components/Board";
 import Navbar from "../components/Navbar";
 import Chat from "../components/Chat";
 import SoundPlayer from "../components/SoundPlayer";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useAppSelector } from "../redux/hooks";
 
 interface Props {
   socket: any;
@@ -21,7 +21,7 @@ const GameRoom = ({ socket }: Props) => {
 
   return (
     <section className="relative">
-      <Navbar />
+      <Navbar socket={socket} />
 
       <p className="text-2xl font-bold text-center">{playerTurn} turn</p>
 

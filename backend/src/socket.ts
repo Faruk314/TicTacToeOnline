@@ -526,6 +526,16 @@ export default function setupSocket() {
 
       await client.set(gameId, JSON.stringify(gameState));
     });
+
+    socket.on("leaveGame", async (receiverId: number) => {
+      const receiverSocketId = getUser(receiverId);
+
+      if (!receiverSocketId) {
+        return console.log("Receiver socketId not found (LeaveGame)");
+      }
+
+      io.to(receiverSocketId).emit("opponentLeft");
+    });
   });
 
   io.listen(4001);
