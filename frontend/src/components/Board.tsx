@@ -29,8 +29,6 @@ const Board = ({ socket }: Props) => {
   const board = useAppSelector((state) => state.game.board);
   const isRoundOver = useAppSelector((state) => state.game.isRoundOver);
 
-  console.log(isRoundOver);
-
   const handleGameStateResponse = useCallback(
     (gameState: Game) => {
       console.log(gameState);
@@ -90,14 +88,22 @@ const Board = ({ socket }: Props) => {
   );
 
   useEffect(() => {
-    socket?.emit("requestGameState", { gameId });
+    if (loggedUserInfo) {
+      socket?.emit("requestGameState", { gameId });
+    }
+  }, [gameId, socket, loggedUserInfo]);
 
-    socket?.on("gameStateResponse", handleGameStateResponse);
+  useEffect(() => {
+    if (loggedUserInfo) {
+      socket?.on("gameStateResponse", handleGameStateResponse);
+    }
 
     return () => {
-      socket?.off("gameStateResponse", handleGameStateResponse);
+      if (loggedUserInfo) {
+        socket?.off("gameStateResponse", handleGameStateResponse);
+      }
     };
-  }, [socket, gameId]);
+  }, [socket, loggedUserInfo]);
 
   // const checkGameStatus = (playerTurn: string) => {
   //   const caseOne =
