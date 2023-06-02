@@ -182,7 +182,7 @@ export default function setupSocket() {
   });
 
   let users = new Map<number, string>();
-  let usersLookingForMatch: string[] = [];
+  let usersLookingForMatch: number[] = [];
 
   const addUser = (userId: number, socketId: string) => {
     if (!users.has(userId)) {
@@ -288,8 +288,8 @@ export default function setupSocket() {
 
     socket.on("findMatch", () => {
       if (socket.userId) {
-        if (!usersLookingForMatch.includes(socket.userId.toString())) {
-          usersLookingForMatch.push(socket.userId.toString());
+        if (!usersLookingForMatch.includes(socket.userId)) {
+          usersLookingForMatch.push(socket.userId);
         }
       }
 
@@ -301,19 +301,22 @@ export default function setupSocket() {
           (playerId) => playerId !== playerOneId && playerId !== playerTwoId
         );
 
-        console.log(usersLookingForMatch);
-
-        console.log(playerOneId);
-        console.log(playerTwoId);
-
-        const socketId = getUser(parseInt(playerOneId));
+        const socketId = getUser(playerOneId);
 
         if (!socketId) return;
 
         io.to(socketId).emit("matchFound", {
-          senderId: parseInt(playerOneId),
-          receiverId: parseInt(playerTwoId),
+          senderId: playerOneId,
+          receiverId: playerTwoId,
         });
+      }
+    });
+
+    socket.on("cancelFindMatch", () => {
+      if (socket.userId) {
+        usersLookingForMatch = usersLookingForMatch.filter(
+          (userId) => userId !== socket.userId
+        );
       }
     });
 

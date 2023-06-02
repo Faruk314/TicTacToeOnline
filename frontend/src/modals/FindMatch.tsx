@@ -42,6 +42,7 @@ const FindMatch = ({ socket, setOpenFindMatch }: Props) => {
         <button
           onClick={() => {
             dispatch(playClickSound("/sounds/click.wav"));
+            socket.emit("cancelFindMatch");
             setOpenFindMatch(false);
           }}
           className="px-2 font-bold bg-white border-2 border-black rounded-full hover:bg-gray-200"
