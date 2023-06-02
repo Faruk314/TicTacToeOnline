@@ -369,8 +369,6 @@ export default function setupSocket() {
 
       let inviteInfo: InviteInfo = JSON.parse(data);
 
-      console.log("unislo");
-
       io.to(inviteInfo.senderSocketId).emit("inviteCanceled");
       io.to(inviteInfo.receiverSocketId).emit("inviteCanceled");
     });
@@ -476,9 +474,6 @@ export default function setupSocket() {
 
     socket.on("newRound", async (gameId: string) => {
       const data = await client.get(gameId);
-
-      console.log("uslo");
-      console.log("newRoundSocketId", socket.userId);
 
       if (!data) return console.log("Could not retrieve gameState");
 
