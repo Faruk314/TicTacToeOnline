@@ -7,10 +7,11 @@ import { playPopUpSound } from "../redux/SoundSlice";
 import OpponentLeft from "../modals/OpponentLeft";
 
 interface Props {
-  socket: any;
+  socket?: any;
+  singlePlayer?: boolean;
 }
 
-const Navbar = ({ socket }: Props) => {
+const Navbar = ({ socket, singlePlayer }: Props) => {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
   const totalRounds = useAppSelector((state) => state.game.totalRounds);
@@ -22,19 +23,25 @@ const Navbar = ({ socket }: Props) => {
   };
 
   useEffect(() => {
-    socket?.on("opponentLeft", opponentLeftHandler);
+    if (socket) {
+      socket?.on("opponentLeft", opponentLeftHandler);
+    }
 
     return () => {
-      socket.off("opponentLeft", opponentLeftHandler);
+      if (socket) {
+        socket.off("opponentLeft", opponentLeftHandler);
+      }
     };
   }, [socket]);
 
   return (
     <div className="flex justify-between p-4">
-      <h2 className="text-xl font-bold">
-        <span>Rounds: </span>
-        <span>{totalRounds}</span>
-      </h2>
+      {!singlePlayer && (
+        <h2 className="text-xl font-bold">
+          <span>Rounds: </span>
+          <span>{totalRounds}</span>
+        </h2>
+      )}
 
       <button
         onClick={() => {
@@ -46,7 +53,13 @@ const Navbar = ({ socket }: Props) => {
         <IoMdSettings size={25} />
       </button>
 
-      {open && <Settings socket={socket} setOpen={setOpen} />}
+      {open && (
+        <Settings
+          socket={socket}
+          setOpen={setOpen}
+          singlePlayer={singlePlayer}
+        />
+      )}
       {gameLeaveOpen && <OpponentLeft />}
     </div>
   );

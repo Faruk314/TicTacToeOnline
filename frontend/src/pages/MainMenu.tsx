@@ -23,7 +23,7 @@ import Leaderboard from "../modals/Leaderboard";
 import Difficulty from "../modals/Difficulty";
 
 interface Props {
-  socket: any;
+  socket?: any;
 }
 
 const MainMenu = ({ socket }: Props) => {

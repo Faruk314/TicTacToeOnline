@@ -8,9 +8,10 @@ import { useNavigate } from "react-router";
 interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   socket: any;
+  singlePlayer?: boolean;
 }
 
-const Settings = ({ setOpen, socket }: Props) => {
+const Settings = ({ setOpen, socket, singlePlayer }: Props) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const otherPlayerId = useAppSelector(
@@ -34,7 +35,9 @@ const Settings = ({ setOpen, socket }: Props) => {
         <div
           onClick={() => {
             dispatch(playClickSound("/sounds/click.wav"));
-            socket.emit("leaveGame", otherPlayerId);
+            if (!singlePlayer) {
+              socket.emit("leaveGame", otherPlayerId);
+            }
             navigate("/menu");
           }}
           className="flex items-center justify-center py-2 space-x-3 text-xl font-bold cursor-pointer hover:bg-gray-100"

@@ -19,7 +19,7 @@ interface InitialState {
   winner: number | null;
   totalRounds: number | null;
   gameLeaveOpen: boolean;
-  difficulty: string | null;
+  difficulty: string;
 }
 
 const initialState: InitialState = {
@@ -36,7 +36,7 @@ const initialState: InitialState = {
   winner: null,
   totalRounds: null,
   gameLeaveOpen: false,
-  difficulty: null,
+  difficulty: localStorage.getItem("difficulty") || "easy",
 };
 
 export const updateLeaderboard = createAsyncThunk(
@@ -109,6 +109,7 @@ const gameSlice = createSlice({
     },
     setDifficulty(state, action: PayloadAction<string>) {
       state.difficulty = action.payload;
+      localStorage.setItem("difficulty", action.payload);
     },
   },
 });
