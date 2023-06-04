@@ -3,7 +3,7 @@ import { useAppSelector } from "../redux/hooks";
 import { User } from "../types/types";
 
 interface Props {
-  playerInfo: User | null;
+  playerInfo?: User | null;
   singlePlayer?: boolean;
 }
 

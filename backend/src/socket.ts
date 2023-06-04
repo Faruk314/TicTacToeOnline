@@ -321,7 +321,6 @@ export default function setupSocket() {
     });
 
     socket.on("acceptInvite", async ({ senderId, receiverId }: Request) => {
-      console.log("hej");
       const gameRoomId: string = uuidv4();
 
       const senderSocketId = getUser(senderId);
@@ -389,6 +388,10 @@ export default function setupSocket() {
         }
 
         const gameState = result ? JSON.parse(result) : null;
+
+        if (!gameState) return;
+
+        if (gameState.isGameOver === true) return;
 
         io.to(userSocketId).emit("gameStateResponse", gameState);
       });
@@ -523,6 +526,11 @@ export default function setupSocket() {
       gameState.isRoundOver = false;
 
       io.to(gameId).emit("gameStateResponse", gameState);
+
+      if (gameState.isGameOver === true) {
+        await client.del(gameId);
+        return;
+      }
 
       await client.set(gameId, JSON.stringify(gameState));
     });

@@ -137,6 +137,7 @@ const authSlice = createSlice({
       getLoginStatus.fulfilled,
       (state, action: PayloadAction<LoginPayload>) => {
         const loggedUserInfo = action.payload.userInfo;
+
         const loginStatus = action.payload.status;
 
         if (loggedUserInfo) {
