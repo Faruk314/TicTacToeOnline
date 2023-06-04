@@ -349,7 +349,10 @@ export default function setupSocket() {
 
         const gameState: Game = createNewGame(senderInfo[0], receiverInfo[0]);
 
-        client.set(gameRoomId, JSON.stringify(gameState));
+        await client.set(gameRoomId, JSON.stringify(gameState));
+
+        await client.del(receiverId.toString());
+        await client.del(senderId.toString());
 
         io.to(receiverSocketId).emit("gameStart", gameRoomId);
         io.to(senderSocketId).emit("gameStart", gameRoomId);
