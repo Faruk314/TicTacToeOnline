@@ -1,9 +1,27 @@
-import { useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { io, Socket } from "socket.io-client";
 import { useAppSelector } from "../redux/hooks";
 
-export const useSocket = (): Socket | null => {
+type SocketContextData = {
+  socket: Socket | null;
+};
+
+const initialSocketContextData: SocketContextData = {
+  socket: null,
+};
+
+export const SocketContext = createContext<SocketContextData>(
+  initialSocketContextData
+);
+
+type SocketContextProviderProps = {
+  children: ReactNode;
+};
+
+export const SocketContextProvider = ({
+  children,
+}: SocketContextProviderProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const [cookies, setCookie] = useCookies(["token"]);
@@ -40,5 +58,13 @@ export const useSocket = (): Socket | null => {
     };
   }, [cookies, isLoggedIn]);
 
-  return socket;
+  const contextValue: SocketContextData = {
+    socket,
+  };
+
+  return (
+    <SocketContext.Provider value={contextValue}>
+      {children}
+    </SocketContext.Provider>
+  );
 };

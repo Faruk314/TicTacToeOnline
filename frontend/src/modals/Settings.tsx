@@ -1,23 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import MuteButton from "../components/MuteButton";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound, toggleMute } from "../redux/SoundSlice";
 import { IoExitOutline } from "react-icons/io5";
 import { useNavigate } from "react-router";
+import { SocketContext } from "../context/socket";
 
 interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  socket: any;
+
   singlePlayer?: boolean;
 }
 
-const Settings = ({ setOpen, socket, singlePlayer }: Props) => {
+const Settings = ({ setOpen, singlePlayer }: Props) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const gameId = useAppSelector((state) => state.game.roomId);
   const otherPlayerId = useAppSelector(
     (state) => state.game.otherPlayerInfo
   )?.userId;
+  const { socket } = useContext(SocketContext);
 
   return (
     <section className="fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center text-center bg-[rgb(0,0,0,0.5)]">
@@ -37,7 +39,7 @@ const Settings = ({ setOpen, socket, singlePlayer }: Props) => {
           onClick={() => {
             dispatch(playClickSound("/sounds/click.wav"));
             if (!singlePlayer) {
-              socket.emit("leaveGame", {
+              socket?.emit("leaveGame", {
                 receiverId: otherPlayerId,
                 gameId: gameId,
               });

@@ -13,8 +13,6 @@ const Difficulty = ({ setOpenDifficulty }: Props) => {
   const navigate = useNavigate();
   const difficulty = useAppSelector((state) => state.game.difficulty);
 
-  console.log(difficulty);
-
   useEffect(() => {
     dispatch(setDifficulty("easy"));
   }, [dispatch]);

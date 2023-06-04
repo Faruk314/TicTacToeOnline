@@ -1,17 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
+import { SocketContext } from "../context/socket";
 import { openGameInviteModal } from "../redux/GameSlice";
 
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 
-interface Props {
-  socket: any;
-}
-
-const GameInvite = ({ socket }: Props) => {
+const GameInvite = () => {
   const dispatch = useAppDispatch();
   const inviterInfo = useAppSelector((state) => state.game.otherPlayerInfo);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
+  const { socket } = useContext(SocketContext);
 
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center text-center bg-[rgb(0,0,0,0.5)]">
@@ -33,7 +31,7 @@ const GameInvite = ({ socket }: Props) => {
           <button
             onClick={() => {
               dispatch(playClickSound("/sounds/click.wav"));
-              socket.emit("cancelInvite");
+              socket?.emit("cancelInvite");
               dispatch(openGameInviteModal(false));
             }}
             className="px-2 font-bold bg-white border-2 border-black rounded-full hover:bg-gray-200"
@@ -44,7 +42,7 @@ const GameInvite = ({ socket }: Props) => {
           <button
             onClick={() => {
               dispatch(playClickSound("/sounds/click.wav"));
-              socket.emit("acceptInvite", {
+              socket?.emit("acceptInvite", {
                 senderId: inviterInfo?.userId,
                 receiverId: loggedUserInfo?.userId,
               });

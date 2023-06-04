@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import FriendRequests from "../modals/FriendRequests";
+import React, { useContext, useEffect, useState } from "react";
 import {
   acceptFriendRequest,
   deleteFriendRequest,
@@ -10,13 +9,13 @@ import { UserRequest } from "../types/types";
 import axios from "axios";
 import { FriendRequestStatus } from "../types/types";
 import GameInvitePending from "../modals/GameInvitePending";
+import { SocketContext } from "../context/socket";
 
 interface Props {
   friendRequestInfo: UserRequest;
-  socket: any;
 }
 
-const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
+const InvitePlayer = ({ friendRequestInfo }: Props) => {
   const dispatch = useAppDispatch();
   const [isHovering, setIsHovering] = useState(false);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
@@ -25,10 +24,11 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
   const invitePendingModalOpen = useAppSelector(
     (state) => state.game.invitePendingModalOpen
   );
+  const { socket } = useContext(SocketContext);
 
   const friendRequestHandler = async () => {
     await dispatch(sendFriendRequest(friendRequestInfo.userId));
-    socket.emit("sendFriendRequest", {
+    socket?.emit("sendFriendRequest", {
       senderId: loggedUserInfo?.userId,
       receiverId: friendRequestInfo.userId,
     });
@@ -49,7 +49,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
   };
 
   const inviteHandler = () => {
-    socket.emit("sendInvite", {
+    socket?.emit("sendInvite", {
       senderId: loggedUserInfo?.userId,
       receiverId: friendRequestInfo.userId,
     });
@@ -160,7 +160,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
               onClick={() => {
                 if (friendRequestInfo.id) {
                   dispatch(deleteFriendRequest(friendRequestInfo.id));
-                  socket.emit("deleteFriend", {
+                  socket?.emit("deleteFriend", {
                     userId: friendRequestInfo.userId,
                     requestId: friendRequestInfo.id,
                   });
@@ -192,10 +192,7 @@ const InvitePlayer = ({ friendRequestInfo, socket }: Props) => {
         )}
       </div>
       {invitePendingModalOpen && (
-        <GameInvitePending
-          invitedUserId={friendRequestInfo.userId}
-          socket={socket}
-        />
+        <GameInvitePending invitedUserId={friendRequestInfo.userId} />
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 import InvitePlayer from "../cards/InvitePlayer";
@@ -6,24 +6,23 @@ import { User } from "../types/types";
 import axios from "axios";
 import { getFriends } from "../redux/FriendSlice";
 import FindMatch from "./FindMatch";
+import { SocketContext } from "../context/socket";
 
 interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-
-  socket: any;
 }
 
 type ModalState = {
   [key: string]: boolean;
 };
 
-const Multiplayer = ({ setOpen, socket }: Props) => {
+const Multiplayer = ({ setOpen }: Props) => {
   const dispatch = useAppDispatch();
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const friends = useAppSelector((state) => state.friend.friends);
   const [openFindMatch, setOpenFindMatch] = useState(false);
-
+  const { socket } = useContext(SocketContext);
   const [isOpen, setIsOpen] = useState<ModalState>({
     friends: false,
     invite: false,
@@ -113,11 +112,7 @@ const Multiplayer = ({ setOpen, socket }: Props) => {
 
             <div className="flex flex-col mt-2 px-1 py-2 space-y-3 overflow-y-auto max-h-[12rem]">
               {friends.map((friend) => (
-                <InvitePlayer
-                  key={friend.id}
-                  friendRequestInfo={friend}
-                  socket={socket}
-                />
+                <InvitePlayer key={friend.id} friendRequestInfo={friend} />
               ))}
             </div>
           </div>
@@ -147,20 +142,14 @@ const Multiplayer = ({ setOpen, socket }: Props) => {
                 <p>No users found</p>
               )}
               {users.map((user) => (
-                <InvitePlayer
-                  socket={socket}
-                  key={user.userId}
-                  friendRequestInfo={user}
-                />
+                <InvitePlayer key={user.userId} friendRequestInfo={user} />
               ))}
             </div>
           </div>
         )}
       </div>
 
-      {openFindMatch && (
-        <FindMatch socket={socket} setOpenFindMatch={setOpenFindMatch} />
-      )}
+      {openFindMatch && <FindMatch setOpenFindMatch={setOpenFindMatch} />}
     </div>
   );
 };

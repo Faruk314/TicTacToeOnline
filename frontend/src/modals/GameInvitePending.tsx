@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
+import { SocketContext } from "../context/socket";
 import { closeInvitePendingModal } from "../redux/GameSlice";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useAppDispatch } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 
 interface Props {
   invitedUserId: number;
-  socket: any;
 }
 
-const GameInvitePending = ({ invitedUserId, socket }: Props) => {
+const GameInvitePending = ({ invitedUserId }: Props) => {
   const dispatch = useAppDispatch();
+  const { socket } = useContext(SocketContext);
 
   console.log("inviteUserid", invitedUserId);
 
@@ -23,7 +24,7 @@ const GameInvitePending = ({ invitedUserId, socket }: Props) => {
         <button
           onClick={() => {
             dispatch(playClickSound("/sounds/click.wav"));
-            socket.emit("cancelInvite");
+            socket?.emit("cancelInvite");
             dispatch(closeInvitePendingModal());
           }}
           className="px-2 font-bold bg-white border-2 border-black rounded-full hover:bg-gray-200"

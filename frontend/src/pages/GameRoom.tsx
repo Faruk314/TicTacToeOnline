@@ -1,19 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import Player from "../cards/Player";
 import Board from "../components/Board";
 import Navbar from "../components/Navbar";
 import Chat from "../components/Chat";
 import SoundPlayer from "../components/SoundPlayer";
 import { useAppSelector } from "../redux/hooks";
+import { SocketContext } from "../context/socket";
 
-interface Props {
-  socket: any;
-}
-
-const GameRoom = ({ socket }: Props) => {
+const GameRoom = () => {
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const otherPlayerInfo = useAppSelector((state) => state.game.otherPlayerInfo);
   const playerTurn = useAppSelector((state) => state.game.playerTurn);
+  const { socket } = useContext(SocketContext);
 
   if (!socket) {
     return <div>Loading...</div>;
@@ -21,7 +19,7 @@ const GameRoom = ({ socket }: Props) => {
 
   return (
     <section className="relative">
-      <Navbar socket={socket} />
+      <Navbar />
 
       <p className="text-2xl font-bold text-center">{playerTurn} turn</p>
 
@@ -33,9 +31,9 @@ const GameRoom = ({ socket }: Props) => {
         <Player playerInfo={otherPlayerInfo} />
       </div>
 
-      <Board socket={socket} />
+      <Board />
 
-      <Chat socket={socket} />
+      <Chat />
 
       <SoundPlayer />
     </section>

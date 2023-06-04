@@ -197,7 +197,7 @@ const VsComputer = () => {
               {row.map((col, colIndex) => (
                 <div
                   onClick={() => {
-                    if (computerTurn === false) {
+                    if (computerTurn === false && !isRoundOver) {
                       playerMove(rowIndex, colIndex);
                     }
                   }}

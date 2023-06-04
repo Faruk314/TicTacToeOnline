@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RiComputerLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 import MuteButton from "../components/MuteButton";
@@ -22,18 +22,16 @@ import {
 } from "../redux/GameSlice";
 import Leaderboard from "../modals/Leaderboard";
 import Difficulty from "../modals/Difficulty";
+import { SocketContext } from "../context/socket";
 
-interface Props {
-  socket?: any;
-}
-
-const MainMenu = ({ socket }: Props) => {
+const MainMenu = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [openMultiplayer, setOpenMultiplayer] = useState(false);
   const [openFriendRequests, setOpenFriendRequests] = useState(false);
   const [openLeaderboard, setOpenLeaderboard] = useState(false);
   const [openDifficulty, setOpenDifficulty] = useState(false);
+  const { socket } = useContext(SocketContext);
 
   const handleLogout = async () => {
     dispatch(playClickSound("/sounds/popUp.mp3"));
@@ -152,10 +150,8 @@ const MainMenu = ({ socket }: Props) => {
 
       <SoundPlayer />
 
-      {openMultiplayer && (
-        <Multiplayer setOpen={setOpenMultiplayer} socket={socket} />
-      )}
-      {openFriendRequests && <FriendRequests socket={socket} />}
+      {openMultiplayer && <Multiplayer setOpen={setOpenMultiplayer} />}
+      {openFriendRequests && <FriendRequests />}
       {openLeaderboard && (
         <Leaderboard setOpenLeaderboard={setOpenLeaderboard} />
       )}

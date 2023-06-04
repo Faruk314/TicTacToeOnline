@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
+import { SocketContext } from "../context/socket";
 import GameOver from "../modals/GameOver";
 import {
   retrieveMessages,
@@ -15,11 +16,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playClickSound } from "../redux/SoundSlice";
 import { Game } from "../types/types";
 
-interface Props {
-  socket: any;
-}
-
-const Board = ({ socket }: Props) => {
+const Board = () => {
   const dispatch = useAppDispatch();
   const gameId = useAppSelector((state) => state.game.roomId);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
@@ -27,6 +24,7 @@ const Board = ({ socket }: Props) => {
   const isGameOver = useAppSelector((state) => state.game.isGameOver);
   const board = useAppSelector((state) => state.game.board);
   const isRoundOver = useAppSelector((state) => state.game.isRoundOver);
+  const { socket } = useContext(SocketContext);
 
   const handleGameStateResponse = useCallback(
     (gameState: Game) => {
@@ -39,7 +37,7 @@ const Board = ({ socket }: Props) => {
 
       if (gameState.isRoundOver) {
         dispatch(setRoundState(gameState.isRoundOver));
-        socket.emit("newRound", gameId);
+        socket?.emit("newRound", gameId);
         return;
       }
 
@@ -174,7 +172,7 @@ const Board = ({ socket }: Props) => {
     dispatch(playClickSound("/sounds/boardClick.wav"));
 
     if (!isRoundOver) {
-      socket.emit("playerMove", { row, col, gameId });
+      socket?.emit("playerMove", { row, col, gameId });
     }
   };
 

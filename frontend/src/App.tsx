@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import GameRoom from "./pages/GameRoom";
 import Login from "./pages/Login";
 import MainMenu from "./pages/MainMenu";
@@ -7,7 +7,6 @@ import Register from "./pages/Register";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { getLoginStatus } from "./redux/AuthSlice";
-import { useSocket } from "./hooks/useSocket";
 import { User, UserRequest } from "./types/types";
 import { deleteFriend, updateFriendRequests } from "./redux/FriendSlice";
 import GameInvite from "./modals/GameInvite";
@@ -18,23 +17,26 @@ import {
 } from "./redux/GameSlice";
 import VsComputer from "./pages/VsComputer";
 import PlayerOffline from "./modals/PlayerOffline";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { SocketContext } from "./context/socket";
 
 axios.defaults.withCredentials = true;
 
 function App() {
   const dispatch = useAppDispatch();
   const gameInviteOpen = useAppSelector((state) => state.game.gameInviteOpen);
-  const socket = useSocket();
   const gameRoomId = useAppSelector((state) => state.game.roomId);
   const playerOffline = useAppSelector((state) => state.game.openPlayerOffline);
+  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const { socket } = useContext(SocketContext);
 
   useEffect(() => {
     socket?.on("connect", () => {
       if (gameRoomId) {
-        socket.emit("reconnectToRoom", gameRoomId);
+        socket?.emit("reconnectToRoom", gameRoomId);
       }
     });
-  }, [socket, gameRoomId]);
+  }, [socket, gameRoomId, isLoggedIn]);
 
   useEffect(() => {
     socket?.on("getFriendRequest", (request: UserRequest) => {
@@ -86,11 +88,33 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/menu" element={<MainMenu socket={socket} />} />
-        <Route path="/room/:id" element={<GameRoom socket={socket} />} />
-        <Route path="/vsComputer" element={<VsComputer />} />
+
+        <Route
+          path="/menu"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <MainMenu />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/room/:id"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <GameRoom />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vsComputer"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <VsComputer />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-      {gameInviteOpen && <GameInvite socket={socket} />}
+      {gameInviteOpen && <GameInvite />}
       {playerOffline && <PlayerOffline />}
     </BrowserRouter>
   );

@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IoMdSettings } from "react-icons/io";
 import Settings from "../modals/Settings";
 import { setGameLeaveOpen } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { playPopUpSound } from "../redux/SoundSlice";
 import OpponentLeft from "../modals/OpponentLeft";
+import { SocketContext } from "../context/socket";
 
 interface Props {
-  socket?: any;
   singlePlayer?: boolean;
 }
 
-const Navbar = ({ socket, singlePlayer }: Props) => {
+const Navbar = ({ singlePlayer }: Props) => {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
   const totalRounds = useAppSelector((state) => state.game.totalRounds);
-
   const gameLeaveOpen = useAppSelector((state) => state.game.gameLeaveOpen);
+  const { socket } = useContext(SocketContext);
 
   const opponentLeftHandler = () => {
     dispatch(setGameLeaveOpen(true));
@@ -29,7 +29,7 @@ const Navbar = ({ socket, singlePlayer }: Props) => {
 
     return () => {
       if (socket) {
-        socket.off("opponentLeft", opponentLeftHandler);
+        socket?.off("opponentLeft", opponentLeftHandler);
       }
     };
   }, [socket]);
@@ -53,13 +53,7 @@ const Navbar = ({ socket, singlePlayer }: Props) => {
         <IoMdSettings size={25} />
       </button>
 
-      {open && (
-        <Settings
-          socket={socket}
-          setOpen={setOpen}
-          singlePlayer={singlePlayer}
-        />
-      )}
+      {open && <Settings setOpen={setOpen} singlePlayer={singlePlayer} />}
       {gameLeaveOpen && <OpponentLeft />}
     </div>
   );

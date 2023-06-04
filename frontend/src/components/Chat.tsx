@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Message from "../cards/Message";
+import { SocketContext } from "../context/socket";
 import { saveMessage } from "../redux/GameSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { Message as Msg } from "../types/types";
 
-interface Props {
-  socket: any;
-}
-
-const Chat = ({ socket }: Props) => {
+const Chat = () => {
   const roomId = useAppSelector((state) => state.game.roomId);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
   const [message, setMessage] = useState("");
   const messages = useAppSelector((state) => state.game.messages);
   const dispatch = useAppDispatch();
+  const { socket } = useContext(SocketContext);
 
   useEffect(() => {
-    socket.on("receiveMessage", (message: Msg) => {
+    socket?.on("receiveMessage", (message: Msg) => {
       dispatch(saveMessage(message));
     });
 
     return () => {
-      socket.off("receiveMessage");
+      socket?.off("receiveMessage");
     };
   }, [socket, dispatch]);
 
@@ -48,7 +46,7 @@ const Chat = ({ socket }: Props) => {
 
         <button
           onClick={(e) => {
-            socket.emit("sendMessage", {
+            socket?.emit("sendMessage", {
               roomId,
               senderName: loggedUserInfo?.userName,
               message,
