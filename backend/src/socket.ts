@@ -262,7 +262,12 @@ export default function setupSocket() {
       const receiverSocketId = getUser(receiverId);
       const senderSocketId = getUser(senderId);
 
-      if (!receiverSocketId || !senderSocketId) return;
+      if (!senderSocketId) return;
+
+      if (!receiverSocketId) {
+        io.to(senderSocketId).emit("playerOffline");
+        return;
+      }
 
       const inviteInfo: InviteInfo = {
         senderSocketId,

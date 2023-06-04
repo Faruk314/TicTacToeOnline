@@ -17,6 +17,7 @@ import {
   setOtherPlayerInfo,
 } from "./redux/GameSlice";
 import VsComputer from "./pages/VsComputer";
+import PlayerOffline from "./modals/PlayerOffline";
 
 axios.defaults.withCredentials = true;
 
@@ -25,6 +26,7 @@ function App() {
   const gameInviteOpen = useAppSelector((state) => state.game.gameInviteOpen);
   const socket = useSocket();
   const gameRoomId = useAppSelector((state) => state.game.roomId);
+  const playerOffline = useAppSelector((state) => state.game.openPlayerOffline);
 
   useEffect(() => {
     socket?.on("connect", () => {
@@ -89,6 +91,7 @@ function App() {
         <Route path="/vsComputer" element={<VsComputer />} />
       </Routes>
       {gameInviteOpen && <GameInvite socket={socket} />}
+      {playerOffline && <PlayerOffline />}
     </BrowserRouter>
   );
 }

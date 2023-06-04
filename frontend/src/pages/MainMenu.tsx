@@ -18,6 +18,7 @@ import {
   openGameInviteModal,
   openInvitePendingModal,
   saveGameRoom,
+  setOpenPlayerOffline,
 } from "../redux/GameSlice";
 import Leaderboard from "../modals/Leaderboard";
 import Difficulty from "../modals/Difficulty";
@@ -39,6 +40,18 @@ const MainMenu = ({ socket }: Props) => {
     await dispatch(logout());
     navigate("/");
   };
+
+  const handleOfflinePlayer = () => {
+    dispatch(setOpenPlayerOffline(true));
+  };
+
+  useEffect(() => {
+    socket?.on("playerOffline", handleOfflinePlayer);
+
+    return () => {
+      socket?.off("playerOffline", handleOfflinePlayer);
+    };
+  }, [socket]);
 
   useEffect(() => {
     socket?.on("inviteCanceled", () => {

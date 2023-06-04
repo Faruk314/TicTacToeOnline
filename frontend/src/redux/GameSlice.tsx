@@ -20,6 +20,7 @@ interface InitialState {
   totalRounds: number | null;
   gameLeaveOpen: boolean;
   difficulty: string;
+  openPlayerOffline: boolean;
 }
 
 const initialState: InitialState = {
@@ -37,6 +38,7 @@ const initialState: InitialState = {
   totalRounds: null,
   gameLeaveOpen: false,
   difficulty: localStorage.getItem("difficulty") || "easy",
+  openPlayerOffline: false,
 };
 
 export const updateLeaderboard = createAsyncThunk(
@@ -111,6 +113,9 @@ const gameSlice = createSlice({
       state.difficulty = action.payload;
       localStorage.setItem("difficulty", action.payload);
     },
+    setOpenPlayerOffline(state, action: PayloadAction<boolean>) {
+      state.openPlayerOffline = action.payload;
+    },
   },
 });
 
@@ -131,6 +136,7 @@ export const {
   setTotalRounds,
   setGameLeaveOpen,
   setDifficulty,
+  setOpenPlayerOffline,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

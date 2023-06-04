@@ -20,7 +20,6 @@ interface Props {
 }
 
 const Board = ({ socket }: Props) => {
-  const [message, setMessage] = useState("");
   const dispatch = useAppDispatch();
   const gameId = useAppSelector((state) => state.game.roomId);
   const loggedUserInfo = useAppSelector((state) => state.auth.loggedUserInfo);
@@ -177,14 +176,6 @@ const Board = ({ socket }: Props) => {
     if (!isRoundOver) {
       socket.emit("playerMove", { row, col, gameId });
     }
-
-    // let newBoard = [...board];
-
-    // newBoard[row][col] = playerTurn;
-
-    // setBoard(newBoard);
-
-    // checkGameStatus();
   };
 
   return (
