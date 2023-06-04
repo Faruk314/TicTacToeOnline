@@ -497,7 +497,6 @@ export default function setupSocket() {
         gameState.playerTurn === "X" &&
         gameState.message === "WIN"
       ) {
-        console.log("uslo u score dio");
         gameState.players.X.score += 1;
       }
 
@@ -535,15 +534,26 @@ export default function setupSocket() {
       await client.set(gameId, JSON.stringify(gameState));
     });
 
-    socket.on("leaveGame", async (receiverId: number) => {
-      const receiverSocketId = getUser(receiverId);
+    socket.on(
+      "leaveGame",
+      async ({
+        receiverId,
+        gameId,
+      }: {
+        receiverId: number;
+        gameId: string;
+      }) => {
+        const receiverSocketId = getUser(receiverId);
 
-      if (!receiverSocketId) {
-        return console.log("Receiver socketId not found (LeaveGame)");
+        if (!receiverSocketId) {
+          return console.log("Receiver socketId not found (LeaveGame)");
+        }
+
+        await client.del(gameId);
+
+        io.to(receiverSocketId).emit("opponentLeft");
       }
-
-      io.to(receiverSocketId).emit("opponentLeft");
-    });
+    );
   });
 
   io.listen(4001);

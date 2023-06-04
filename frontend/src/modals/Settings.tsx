@@ -14,6 +14,7 @@ interface Props {
 const Settings = ({ setOpen, socket, singlePlayer }: Props) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const gameId = useAppSelector((state) => state.game.roomId);
   const otherPlayerId = useAppSelector(
     (state) => state.game.otherPlayerInfo
   )?.userId;
@@ -36,7 +37,10 @@ const Settings = ({ setOpen, socket, singlePlayer }: Props) => {
           onClick={() => {
             dispatch(playClickSound("/sounds/click.wav"));
             if (!singlePlayer) {
-              socket.emit("leaveGame", otherPlayerId);
+              socket.emit("leaveGame", {
+                receiverId: otherPlayerId,
+                gameId: gameId,
+              });
             }
             navigate("/menu");
           }}
