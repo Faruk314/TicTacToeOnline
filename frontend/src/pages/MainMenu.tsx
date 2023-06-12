@@ -32,6 +32,9 @@ const MainMenu = () => {
   const [openLeaderboard, setOpenLeaderboard] = useState(false);
   const [openDifficulty, setOpenDifficulty] = useState(false);
   const { socket } = useContext(SocketContext);
+  const friendRequestsCount = useAppSelector(
+    (state) => state.friend.friendRequests
+  ).length;
 
   const handleLogout = async () => {
     dispatch(playClickSound("/sounds/popUp.mp3"));
@@ -93,6 +96,12 @@ const MainMenu = () => {
       >
         <FaUserFriends size={25} />
       </button>
+
+      {friendRequestsCount > 0 && (
+        <span className="absolute text-[0.9rem] top-2 flex justify-center items-center w-[1.2rem] h-[1.2rem] text-white bg-red-500 rounded-full left-9">
+          <span>{friendRequestsCount}</span>
+        </span>
+      )}
 
       <div
         onClick={(e) => {
