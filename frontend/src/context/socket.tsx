@@ -1,5 +1,4 @@
 import React, { createContext, ReactNode, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { io, Socket } from "socket.io-client";
 import { useAppSelector } from "../redux/hooks";
 
@@ -24,27 +23,31 @@ export const SocketContextProvider = ({
 }: SocketContextProviderProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
-  const [cookies, setCookie] = useCookies(["token"]);
 
-  console.log(cookies);
+  const getCookie = (name: string) => {
+    const cookieString = document.cookie;
+    const cookies = cookieString.split(";");
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      const token = cookies.token;
-
-      if (token) {
-        setCookie("token", token);
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith(name + "=")) {
+        const value = cookie.substring(name.length + 1);
+        return decodeURIComponent(value);
       }
     }
-  }, [isLoggedIn, setCookie, cookies]);
+
+    return null;
+  };
+
+  console.log(isLoggedIn);
 
   useEffect(() => {
     let newSocket: any;
 
-    if (cookies.token && isLoggedIn) {
+    if (isLoggedIn) {
       newSocket = io("http://localhost:4001", {
         auth: {
-          token: cookies.token,
+          token: getCookie("token"),
         },
       });
     }
@@ -52,11 +55,9 @@ export const SocketContextProvider = ({
     setSocket(newSocket);
 
     return () => {
-      if (newSocket) {
-        newSocket.disconnect();
-      }
+      socket?.disconnect();
     };
-  }, [cookies, isLoggedIn]);
+  }, [isLoggedIn]);
 
   const contextValue: SocketContextData = {
     socket,
